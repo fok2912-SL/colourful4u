@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="zh-HK">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>香港醫療與理財資訊系統 - 閑寂日式美學</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Google Fonts: 日式極簡明體與黑體 -->
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #fcfaf7;
+            --card-bg: #ffffff;
+            --text-color: #2c2c2c;
+            --sub-text: #767676;
+            --border-color: #e5e0d8;
+            --accent-color: #bc4749;
+            --success-color: #386641;
+            --primary-accent: #3d5a80;
+            --fuji-blue: #2b4c7e;
+        }
+
+        body {
+            font-family: 'Noto Sans JP', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 0;
+            line-height: 1.6;
+        }
+
+        .serif-title {
+            font-family: 'Noto Serif JP', serif;
+        }
+
+        .page {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.4s ease-in-out;
+            min-height: 100vh;
+            padding: 30px 20px;
+            box-sizing: border-box;
+        }
+
+        .page.active {
+            display: block;
+            opacity: 1;
+        }
+
+        #homePage {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            background: linear-gradient(135deg, #fcfaf7 0%, #f4f0ea 100%);
+            min-height: 100vh;
+        }
+
+        .home-content {
+            max-width: 500px;
+            padding: 40px;
+        }
+
+        .fuji-container {
+            width: 180px;
+            height: 120px;
+            margin: 0 auto 30px auto;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .fuji-mountain {
+            width: 0;
+            height: 0;
+            border-left: 90px solid transparent;
+            border-right: 90px solid transparent;
+            border-bottom: 110px solid var(--fuji-blue);
+            position: relative;
+        }
+
+        .fuji-snow-cap {
+            position: absolute;
+            top: 25px;
+            left: -35px;
+            width: 0;
+            height: 0;
+            border-left: 35px solid transparent;
+            border-right: 35px solid transparent;
+            border-bottom: 45px solid #ffffff;
+            clip-path: polygon(30% 0%, 70% 0%, 100% 100%, 0% 100%);
+        }
+
+        .fuji-sun {
+            position: absolute;
+            top: 10px;
+            right: 25px;
+            width: 30px;
+            height: 30px;
+            background-color: var(--accent-color);
+            border-radius: 50%;
+            opacity: 0.85;
+        }
+
+        .home-title {
+            font-size: 24px;
+            font-weight: 400;
+            letter-spacing: 3px;
+            color: var(--text-color);
+            margin-bottom: 10px;
+        }
+
+        .home-subtitle {
+            font-size: 13px;
+            color: var(--sub-text);
+            letter-spacing: 2px;
+            margin-bottom: 35px;
+        }
+
+        .btn-enter {
+            background-color: #2b2b2b;
+            color: #ffffff;
+            border: none;
+            padding: 14px 40px;
+            font-size: 15px;
+            border-radius: 30px;
+            cursor: pointer;
+            letter-spacing: 2px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+        }
+
+        .btn-enter:hover {
+            background-color: var(--primary-accent);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0,0,0,0.12);
+        }
+
+        .container {
+            max-width: 1050px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 20px;
+            position: relative;
+        }
+
+        .btn-back {
+            position: absolute;
+            left: 0;
+            top: 5px;
+            background: none;
+            border: 1px solid var(--border-color);
+            color: var(--sub-text);
+            padding: 6px 14px;
+            font-size: 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: all 0.2s;
+            width: auto;
+        }
+
+        .btn-back:hover {
+            background-color: #f4f1ea;
+            color: var(--text-color);
+        }
+
+        header h1 {
+            font-weight: 400;
+            letter-spacing: 2px;
+            color: var(--text-color);
+            margin-bottom: 8px;
+            font-size: 24px;
+        }
+
+        header p {
+            color: var(--sub-text);
+            font-size: 13px;
+            letter-spacing: 1px;
+        }
+
+        .mode-selector-card {
+            background-color: var(--card-bg);
+            border-radius: 4px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.02);
+            padding: 20px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .mode-selector-card h3 {
+            margin-top: 0;
+            font-size: 14px;
+            color: var(--sub-text);
+            letter-spacing: 1.5px;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+
+        .radio-group {
+            display: inline-flex;
+            gap: 20px;
+            font-size: 14px;
+            cursor: pointer;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .radio-group label {
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 12px;
+            border-radius: 20px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .radio-group label:hover {
+            background-color: #f4f1ea;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-radius: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.02);
+            padding: 30px;
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .form-row {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .form-group {
+            flex: 1;
+            min-width: 220px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            font-size: 13px;
+            color: var(--sub-text);
+            letter-spacing: 0.5px;
+        }
+
+        input[type="number"], select, input[type="text"], input[type="date"], textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            box-sizing: border-box;
+            font-size: 15px;
+            background-color: #fff;
+            color: var(--text-color);
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        input[type="number"]:focus, select:focus, input[type="text"]:focus, input[type="date"]:focus, textarea:focus {
+            border-color: var(--primary-accent);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .checkbox-container {
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            padding: 12px;
+            max-height: 160px;
+            overflow-y: auto;
+            background: #fff;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 8px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-action {
+            background-color: #2b2b2b;
+            color: #ffffff;
+            border: none;
+            padding: 14px 20px;
+            width: 100%;
+            font-size: 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            letter-spacing: 1px;
+            transition: background 0.2s;
+        }
+
+        .btn-action:hover {
+            background-color: #4a4a4a;
+        }
+
+        .footer-contact-bar {
+            text-align: center;
+            padding: 30px 0;
+            margin-top: 40px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .btn-contact {
+            background-color: var(--primary-accent);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            letter-spacing: 1.5px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+        }
+
+        .btn-contact:hover {
+            background-color: #2b4c7e;
+            transform: translateY(-1px);
+        }
+
+        .contact-form-card {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .comparison-results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(310px, 1fr));
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .company-card-item {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 24px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.01);
+            position: relative;
+            border-top: 3px solid #2b2b2b;
+        }
+
+        .company-card-item h4 {
+            margin-top: 0;
+            color: var(--text-color);
+            font-size: 17px;
+            font-weight: 500;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .plan-detail-list {
+            list-style: none;
+            padding: 0;
+            margin: 15px 0 0 0;
+        }
+
+        .plan-detail-list li {
+            margin-bottom: 12px;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px dotted #eee;
+            padding-bottom: 8px;
+        }
+
+        .plan-detail-list li span.label { color: var(--sub-text); font-size: 13px; }
+        .plan-detail-list li span.value { font-weight: 500; color: var(--text-color); }
+        .price-highlight { font-size: 20px; font-weight: 500; color: var(--text-color); }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+
+        th, td {
+            padding: 14px 12px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        th {
+            background-color: #f7f4ee;
+            color: var(--text-color);
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .waiting-time-alert { font-weight: 500; color: var(--accent-color); }
+        .rate-highlight { font-weight: 500; color: var(--success-color); font-size: 15px; }
+
+        .badge-standard { background: #e8ede4; color: #386641; padding: 3px 8px; border-radius: 3px; font-size: 11px; }
+        .badge-flexi { background: #e2ecf2; color: #3d5a80; padding: 3px 8px; border-radius: 3px; font-size: 11px; }
+        .badge-high-end { background: #fdf0ed; color: #bc4749; padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: 500; }
+
+        .status-badge {
+            padding: 3px 10px;
+            border-radius: 10px;
+            font-size: 12px;
+            display: inline-block;
+        }
+        .status-short { background: #e8ede4; color: #386641; }
+        .status-medium { background: #fef3e2; color: #b78428; }
+        .status-long { background: #fdf0ed; color: #bc4749; }
+
+        .section-title {
+            color: var(--text-color);
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+            margin-top: 0;
+            margin-bottom: 20px;
+            font-size: 18px;
+            font-weight: 400;
+            letter-spacing: 1px;
+        }
+
+        .refresh-info {
+            font-size: 12px;
+            color: var(--sub-text);
+            float: right;
+            margin-top: 3px;
+        }
+
+        .hidden-section { display: none; }
+
+        /* 專門為列印/匯出 PDF 設定的樣式 */
+        @media print {
+            body {
+                background-color: #ffffff !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+            .print-only {
+                display: block !important;
+            }
+            input, select {
+                border: none !important;
+                background: transparent !important;
+                padding: 0 !important;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 1. 主頁 (Home Page) -->
+    <div id="homePage" class="page active">
+        <div class="home-content">
+            <div class="fuji-container">
+                <div class="fuji-mountain">
+                    <div class="fuji-snow-cap"></div>
+                </div>
+                <div class="fuji-sun"></div>
+            </div>
+            
+            <h2 class="home-title">醫療與理財資訊系統</h2>
+            <p class="home-subtitle">－ 閑寂日式美學 · 專業精準對比 －</p>
+            
+            <button class="btn-enter" onclick="goToPage('dataPage')">進入了解</button>
+        </div>
+    </div>
+
+    <!-- 2. 資料功能頁面 (Data Page) -->
+    <div id="dataPage" class="page">
+        <div class="container">
+            <header>
+                <button class="btn-back" onclick="goToPage('homePage')">← 返回主頁</button>
+                <h1>醫療與理財資訊參照</h1>
+                <p>－ 簡約、自然、流暢 －</p>
+            </header>
+
+            <div class="mode-selector-card">
+                <h3>項目選擇</h3>
+                <div class="radio-group">
+                    <label>
+                        <input type="radio" name="viewMode" value="er" checked onchange="switchMode()"> 急症室即時輪候
+                    </label>
+                    <label>
+                        <input type="radio" name="viewMode" value="vhis" onchange="switchMode()"> 自願醫保保費查詢
+                    </label>
+                    <label>
+                        <input type="radio" name="viewMode" value="savings" onchange="switchMode()"> $1萬定期存款試算
+                    </label>
+                    <label>
+                        <input type="radio" name="viewMode" value="insuranceAnalysis" onchange="switchMode()"> 保險與資產配置分析
+                    </label>
+                </div>
+            </div>
+
+            <!-- 急症室即時輪候時間模組 -->
+            <div id="erSection" class="card">
+                <h2 class="section-title">
+                    公立醫院急症室即時輪候時間參考 
+                    <span class="refresh-info" id="updateTime">更新時間：剛剛</span>
+                </h2>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>聯網</th>
+                            <th>醫院名稱</th>
+                            <th>大約等候時間</th>
+                            <th>目前狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody id="erTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- 自願醫保保費查詢與三間公司卡片列表對比模組 -->
+            <div id="vhisSection" class="card hidden-section">
+                <h2 class="section-title">自願醫保 (VHIS) 保費查詢與多公司對比</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="age">受保人年齡 (0 - 100 歲):</label>
+                        <input type="number" id="age" min="0" max="100" value="35" placeholder="例如：35">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="gender">性別:</label>
+                        <select id="gender">
+                            <option value="M">男 (Male)</option>
+                            <option value="F">女 (Female)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="planType">計劃級別篩選:</label>
+                        <select id="planType">
+                            <option value="ALL">全部級別 (標準 + 靈活 + 高端)</option>
+                            <option value="STANDARD">只睇標準計劃 (Standard)</option>
+                            <option value="FLEXI">只睇靈活計劃 (Flexi)</option>
+                            <option value="HIGH_END">只睇高端醫療 (全數賠償)</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="deductible">高端醫療墊底費 (自付費):</label>
+                        <select id="deductible">
+                            <option value="0">$0 (全數賠償，無墊底費)</option>
+                            <option value="15000">$15,000 墊底費</option>
+                            <option value="20000" selected>$20,000 墊底費 (最熱門)</option>
+                            <option value="50000">$50,000 墊底費</option>
+                            <option value="75000">$75,000 墊底費</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group" style="flex: 2;">
+                        <label>勾選要比較的保險公司 (最多選 3 間)：</label>
+                        <div class="checkbox-container" id="companyCheckboxes"></div>
+                    </div>
+                </div>
+
+                <button class="btn-action" onclick="calculateVHIS()">立即進行保費列表對比</button>
+
+                <div id="resultsCard" style="display: none; margin-top: 30px;">
+                    <h3 style="color: var(--text-color); font-weight: 400; font-size: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                        保費列表對比結果 (<span id="displayAge"></span> 歲 / <span id="displayGender"></span>)
+                    </h3>
+                    <div class="comparison-results-grid" id="comparisonGrid"></div>
+                </div>
+            </div>
+
+            <!-- $1萬定期存款利息試算模組 -->
+            <div id="savingsSection" class="card hidden-section">
+                <h2 class="section-title">港幣 $10,000 定期存款利息試算 (3個月 / 6個月 / 1年)</h2>
+                <p style="color: var(--sub-text); font-size: 13px; margin-bottom: 20px;">假設存入本金為 $10,000 港元，以下為各大銀行在不同存期下的年利率及預估利息：</p>
+                
+                <table>
+                    <thead>
+                        <tr>
+                            <th>銀行名稱</th>
+                            <th>3個月 (年利率 / 利息)</th>
+                            <th>6個月 (年利率 / 利息)</th>
+                            <th>1年 (年利率 / 利息)</th>
+                            <th>備註 / 條款要求</th>
+                        </tr>
+                    </thead>
+                    <tbody id="savingsTableBody"></tbody>
+                </table>
+            </div>
+
+            <!-- 保險與資產配置分析模組 (新增) -->
+            <div id="insuranceAnalysisSection" class="card hidden-section">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                    <!-- 左側：輸入表單 (佔 7 格) -->
+                    <div class="lg:col-span-7 bg-[#fffefc] rounded-xl shadow-sm border border-stone-200 p-6 space-y-6 no-print">
+                        <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
+                            <span class="w-2 h-2 rounded-full bg-stone-700"></span>
+                            <h2 class="text-sm font-medium tracking-wide text-stone-850 serif-title">一、 客戶與保單資料</h2>
+                        </div>
+
+                        <!-- 基本資料 -->
+                        <div class="grid grid-cols-3 gap-3">
+                            <div>
+                                <label class="block text-[11px] font-medium text-stone-500 mb-1">客戶姓名</label>
+                                <input type="text" id="insClientName" value="" placeholder="請輸入姓名" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-stone-500">
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-medium text-stone-500 mb-1">性別</label>
+                                <select id="insClientGender" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-stone-500">
+                                    <option value="男">男</option>
+                                    <option value="女">女</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-[11px] font-medium text-stone-500 mb-1">出生日期 (自動計年齡)</label>
+                                <input type="date" id="insClientDOB" onchange="calculateInsuranceAge()" class="w-full px-2 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-stone-500">
+                            </div>
+                        </div>
+
+                        <!-- 現有保單清單區 -->
+                        <div class="space-y-3">
+                            <div class="flex justify-between items-center">
+                                <h3 class="text-[11px] font-medium text-stone-500 uppercase tracking-wider">現有保單 / MPF 明細</h3>
+                                <button type="button" onclick="addInsurancePolicyRow()" class="text-stone-700 bg-stone-100 hover:bg-stone-200 text-[11px] font-medium px-3 py-1.5 rounded-lg transition-colors">
+                                    + 新增保單/MPF
+                                </button>
+                            </div>
+
+                            <div id="insPoliciesContainer" class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+                                <!-- 空白保單範本 -->
+                                <div class="policy-item bg-[#f9f8f6] border border-stone-200 p-4 rounded-xl relative space-y-3">
+                                    <button type="button" onclick="removeInsurancePolicyRow(this)" class="absolute top-3 right-3 text-stone-400 hover:text-red-500 text-xs">✕</button>
+                                    
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-[10px] text-stone-500 mb-1">機構 / 保險公司</label>
+                                            <input type="text" placeholder="例如：友邦保險 / 永明金融" class="policy-company w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] text-stone-500 mb-1">保單號碼 / 帳戶編號</label>
+                                            <input type="text" placeholder="例如：POL-001" class="policy-number w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-3 gap-3">
+                                        <div>
+                                            <label class="block text-[10px] text-stone-500 mb-1">保障/資產類型</label>
+                                            <select class="policy-type w-full px-2 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                                                <option value="life">人壽保險</option>
+                                                <option value="ci">危疾保險</option>
+                                                <option value="accident">意外保險</option>
+                                                <option value="medical">醫療保險</option>
+                                                <option value="savings">儲蓄/年金 (退休)</option>
+                                                <option value="mpf">MPF 強積金 (退休)</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label class="block text-[10px] text-stone-500 mb-1">保額 / 權益總值 (HKD)</label>
+                                            <input type="number" placeholder="0" class="policy-suminsured w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between items-center mb-1">
+                                                <label class="text-[10px] text-stone-500">供款金額 (HKD)</label>
+                                                <select class="policy-freq text-[9px] bg-stone-100 border border-stone-200 rounded px-1 text-stone-600 focus:outline-none">
+                                                    <option value="year">每年</option>
+                                                    <option value="month">每月</option>
+                                                </select>
+                                            </div>
+                                            <input type="number" placeholder="0" class="policy-premium w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                                        </div>
+                                    </div>
+
+                                    <div class="grid grid-cols-4 gap-2 pt-2 border-t border-stone-200">
+                                        <div>
+                                            <label class="block text-[9px] text-stone-400">生效日期</label>
+                                            <input type="date" onchange="autoCalcInsuranceEndDate(this)" class="policy-startdate w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9px] text-stone-400">供款年期</label>
+                                            <input type="number" placeholder="0" onchange="autoCalcInsuranceEndDate(this)" class="policy-term w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9px] text-stone-400">現金價值 / 結餘</label>
+                                            <input type="number" placeholder="0" class="policy-cashvalue w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[9px] text-stone-400">到期日 (自動)</label>
+                                            <input type="date" class="policy-enddate w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 理想目標 -->
+                        <div class="space-y-3 pt-2">
+                            <div class="flex items-center space-x-2 border-b border-stone-100 pb-2">
+                                <span class="w-2 h-2 rounded-full bg-stone-700"></span>
+                                <h2 class="text-sm font-medium tracking-wide text-stone-850 serif-title">二、 理想保障目標</h2>
+                            </div>
+                            <div class="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label class="block text-[11px] font-medium text-stone-500 mb-1">目標人壽保額</label>
+                                    <input type="number" id="insTargetLife" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-medium text-stone-500 mb-1">目標危疾保額</label>
+                                    <input type="number" id="insTargetCI" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-medium text-stone-500 mb-1">目標意外保額</label>
+                                    <input type="number" id="insTargetAccident" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
+                                </div>
+                                <div>
+                                    <label class="block text-[11px] font-medium text-stone-500 mb-1">目標退休金儲蓄</label>
+                                    <input type="number" id="insTargetRetirement" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" onclick="calculateInsuranceSummary()" class="w-full bg-stone-800 hover:bg-stone-900 text-stone-100 font-medium py-3 rounded-xl transition-colors text-xs tracking-widest uppercase">
+                            計算保障分析
+                        </button>
+                    </div>
+
+                    <!-- 右側：總結與分析報告 (佔 5 格) -->
+                    <div class="lg:col-span-5 bg-[#fffefc] rounded-xl shadow-sm border border-stone-200 p-6 flex flex-col justify-between space-y-6">
+                        <div class="space-y-4">
+                            <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
+                                <span class="w-2 h-2 rounded-full bg-stone-700"></span>
+                                <h2 class="text-sm font-medium tracking-wide text-stone-850 serif-title">三、 缺口與資產總結</h2>
+                            </div>
+
+                            <!-- 摘要卡片 -->
+                            <div class="bg-[#f9f8f6] p-4 rounded-xl border border-stone-200/60 space-y-1.5 text-xs">
+                                <p class="font-medium text-stone-800" id="insSummaryHeader">客戶：<span class="font-semibold text-stone-900">未填寫</span> (性別：- | 年齡：-)</p>
+                                <p class="text-stone-500">有效保單/MPF數：<span id="insDispPolicyCount" class="font-medium text-stone-800">0</span> 份</p>
+                                <p class="text-stone-500">供款支出：<span id="insDispMonthlyPremium" class="font-medium text-stone-800">HK$0 /月</span> (年繳: <span id="insDispAnnualPremium" class="font-medium text-stone-800">HK$0</span>)</p>
+                                <p class="text-stone-500">現金價值/MPF結餘總額：<span id="insDispTotalCashValue" class="font-medium text-stone-800">HK$0</span></p>
+                            </div>
+
+                            <!-- 現有保單內容清單 -->
+                            <div>
+                                <h4 class="font-medium text-stone-700 mb-1.5 text-[11px] uppercase tracking-wider">現有保單與 MPF 明細清單</h4>
+                                <div id="insPolicyListSummary" class="space-y-1.5 max-h-28 overflow-y-auto pr-1 text-stone-500 text-[11px]">
+                                    尚未新增任何保單或 MPF
+                                </div>
+                            </div>
+
+                            <!-- 缺口清單 -->
+                            <div class="space-y-2">
+                                <div class="flex justify-between text-xs py-1 border-b border-stone-100">
+                                    <span class="text-stone-500">人壽保障缺口</span>
+                                    <span id="insLifeGapText" class="font-semibold text-stone-800">HK$ 0</span>
+                                </div>
+                                <div class="flex justify-between text-xs py-1 border-b border-stone-100">
+                                    <span class="text-stone-500">危疾保障缺口</span>
+                                    <span id="insCiGapText" class="font-semibold text-stone-800">HK$ 0</span>
+                                </div>
+                                <div class="flex justify-between text-xs py-1 border-b border-stone-100">
+                                    <span class="text-stone-500">意外保障缺口</span>
+                                    <span id="insAccidentGapText" class="font-semibold text-stone-800">HK$ 0</span>
+                                </div>
+                                <div class="flex justify-between text-xs py-1 border-b border-stone-100">
+                                    <span class="text-stone-500">退休金儲蓄缺口</span>
+                                    <span id="insRetirementGapText" class="font-semibold text-stone-800">HK$ 0</span>
+                                </div>
+                            </div>
+
+                            <!-- 雙數據對比長條圖 -->
+                            <div class="relative h-40 w-full flex items-center justify-center pt-2">
+                                <canvas id="insGapChart"></canvas>
+                            </div>
+                        </div>
+
+                        <!-- 按鈕區 (PDF 與 WhatsApp) -->
+                        <div class="space-y-2 no-print">
+                            <button onclick="exportInsurancePDF()" class="w-full bg-stone-800 hover:bg-stone-900 text-stone-100 font-medium py-3 rounded-xl transition-colors text-xs tracking-wider flex items-center justify-center space-x-2">
+                                <span>📄 匯出 PDF 分析報告</span>
+                            </button>
+                            <button onclick="copyInsuranceWhatsAppReport()" class="w-full bg-stone-100 hover:bg-stone-200 text-stone-800 font-medium py-2.5 rounded-xl transition-colors text-xs tracking-wider flex items-center justify-center space-x-2">
+                                <span>📋 一鍵複製 WhatsApp 分析報告</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部新增的「聯絡我們」按鈕專屬區域 -->
+            <div class="footer-contact-bar">
+                <button class="btn-contact" onclick="goToPage('contactPage')">聯絡我們</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 3. 聯絡我們表單頁面 (Contact Page) -->
+    <div id="contactPage" class="page">
+        <div class="container">
+            <header>
+                <button class="btn-back" onclick="goToPage('dataPage')">← 返回資料頁</button>
+                <h1>聯絡我們</h1>
+                <p>－ 專人為您解答醫療與理財規劃查詢 －</p>
+            </header>
+
+            <div class="card contact-form-card">
+                <h2 class="section-title" style="text-align: center;">填寫查詢表格</h2>
+                
+                <form onsubmit="submitContactForm(event)">
+                    <div style="margin-bottom: 20px;">
+                        <label for="contactName">姓名 (Name) *</label>
+                        <input type="text" id="contactName" required placeholder="請輸入您的姓名">
+                    </div>
+
+                    <div style="margin-bottom: 20px;">
+                        <label for="contactPhone">聯絡電話 (Phone Number) *</label>
+                        <input type="text" id="contactPhone" required placeholder="請輸入您的聯絡電話">
+                    </div>
+
+                    <div style="margin-bottom: 25px;">
+                        <label for="contactMessage">查詢內容 (Message) *</label>
+                        <textarea id="contactMessage" required placeholder="請輸入您想查詢的保險計劃、定期存款或其他理財內容..."></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-action" id="submitBtn">提交查詢</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- 複製成功提示 Toast -->
+    <div id="toast" class="fixed bottom-6 right-6 bg-stone-800 text-stone-100 px-4 py-2.5 rounded-xl text-xs shadow-lg hidden transition-all no-print">
+        已成功複製報告，可直接貼上至 WhatsApp！
+    </div>
+
+<script>
+    function goToPage(pageId) {
+        const pages = ['homePage', 'dataPage', 'contactPage'];
+        
+        pages.forEach(id => {
+            const el = document.getElementById(id);
+            if (id === pageId) {
+                el.style.display = 'block';
+                setTimeout(() => el.classList.add('active'), 50);
+            } else {
+                el.classList.remove('active');
+                setTimeout(() => {
+                    if (!el.classList.contains('active')) {
+                        el.style.display = 'none';
+                    }
+                }, 300);
+            }
+        });
+        
+        window.scrollTo(0, 0);
+    }
+
+    async function submitContactForm(event) {
+        event.preventDefault();
+        
+        const name = document.getElementById('contactName').value;
+        const phone = document.getElementById('contactPhone').value;
+        const message = document.getElementById('contactMessage').value;
+        const submitBtn = document.getElementById('submitBtn');
+
+        submitBtn.innerText = "正在同步至 Google 試算表...";
+        submitBtn.disabled = true;
+
+        const scriptURL = 'https://script.google.com/macros/s/AKfycbyXMT8DD4RkwmbGmEApkhzwbDsALyOdL4KQqV5mGchLPjmZ-sj2Akc0LBHYGUi2qfhIeg/exec';
+
+        const formData = {
+            name: name,
+            phone: phone,
+            message: message
+        };
+
+        try {
+            await fetch(scriptURL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(formData)
+            });
+
+            alert(`多謝您的查詢，${name}！您的資料已成功同步至 Google 試算表。`);
+            event.target.reset();
+            goToPage('dataPage');
+        } catch (error) {
+            console.error('Error!', error.message);
+            alert("提交失敗，請檢查網路連線或 Apps Script 設定。");
+        } finally {
+            submitBtn.innerText = "提交查詢";
+            submitBtn.disabled = false;
+        }
+    }
+
+    const erData = [
+        { cluster: "香港島", hospital: "東區尤德夫人那打素醫院", hours: "大約 2 - 3 小時", level: "medium" },
+        { cluster: "香港島", hospital: "瑪麗醫院", hours: "大約 3 - 4 小時", level: "long" },
+        { cluster: "香港島", hospital: "律敦治醫院", hours: "大約 1 - 2 小時", level: "short" },
+        { cluster: "九龍中", hospital: "伊利沙伯醫院 / 廣華醫院", hours: "大約 3 - 4 小時", level: "long" },
+        { cluster: "九龍中", hospital: "基督教聯合醫院", hours: "大約 3 - 5 小時", level: "long" },
+        { cluster: "九龍西", hospital: "瑪嘉烈醫院", hours: "大約 3 - 4 小時", level: "long" },
+        { cluster: "新界東", hospital: "威爾斯親王醫院", hours: "大約 4 小時以上", level: "long" },
+        { cluster: "新界西", hospital: "屯門醫院", hours: "大約 4 小時以上", level: "long" }
+    ];
+
+    const allProviders = [
+        { name: "香港永明金融 (Sun Life)", category: "STANDARD", type: "標準計劃 (Standard Plan)", baseFactor: 2200 },
+        { name: "香港永明金融 (Sun Life)", category: "FLEXI", type: "靈活醫療保障計劃 (Flexi Plan)", baseFactor: 3100 },
+        { name: "香港永明金融 (Sun Life)", category: "HIGH_END", type: "高端醫療靈活計劃 (High-End Medical)", baseFactor: 4600 },
+        { name: "友邦保險 (AIA)", category: "STANDARD", type: "標準計劃 (Standard Plan)", baseFactor: 2400 },
+        { name: "友邦保險 (AIA)", category: "FLEXI", type: "自願醫保靈活計劃", baseFactor: 3300 },
+        { name: "友邦保險 (AIA)", category: "HIGH_END", type: "尊耀高端醫療計劃", baseFactor: 5100 },
+        { name: "保誠保險 (Prudential)", category: "STANDARD", type: "標準計劃 (Standard Plan)", baseFactor: 2300 },
+        { name: "保誠保險 (Prudential)", category: "FLEXI", type: "靈活自主醫保計劃", baseFactor: 3250 },
+        { name: "保誠保險 (Prudential)", category: "HIGH_END", type: "自願醫保高端版", baseFactor: 4900 },
+        { name: "宏利香港 (Manulife)", category: "STANDARD", type: "標準計劃 (Standard Plan)", baseFactor: 2280 },
+        { name: "宏利香港 (Manulife)", category: "FLEXI", type: "全護航自願醫保靈活計劃", baseFactor: 3200 },
+        { name: "宏利香港 (Manulife)", category: "HIGH_END", type: "宏利高端醫療系列", baseFactor: 4750 },
+        { name: "AXA 安盛", category: "STANDARD", type: "標準計劃 (Standard Plan)", baseFactor: 2450 },
+        { name: "AXA 安盛", category: "FLEXI", type: "尊衛「您」醫療計劃", baseFactor: 3400 },
+        { name: "AXA 安盛", category: "HIGH_END", type: "智尊保高端醫療", baseFactor: 5400 },
+        { name: "富衛人壽 (FWD)", category: "STANDARD", type: "標準計劃 (Standard Plan)", baseFactor: 2150 },
+        { name: "富衛人壽 (FWD)", category: "FLEXI", type: "衛一醫療計劃", baseFactor: 2950 },
+        { name: "富衛人壽 (FWD)", category: "HIGH_END", type: "尊顯醫療保", baseFactor: 4400 },
+        { name: "Bowtie (保泰)", category: "STANDARD", type: "自願醫保 (標準計劃)", baseFactor: 2000 },
+        { name: "Bowtie (保泰)", category: "FLEXI", type: "靈活計劃 (基本)", baseFactor: 2800 },
+        { name: "Bowtie (保泰)", category: "HIGH_END", type: "Bowtie Pink 高端醫療", baseFactor: 3800 },
+        { name: "信諾環球 (Cigna)", category: "STANDARD", type: "標準計劃 (Standard Plan)", baseFactor: 2350 },
+        { name: "信諾環球 (Cigna)", category: "FLEXI", type: "自願醫保靈活計劃", baseFactor: 3350 },
+        { name: "信諾環球 (Cigna)", category: "HIGH_END", type: "信諾尊尚醫療計劃", baseFactor: 5200 },
+        { name: "保柏 (Bupa)", category: "STANDARD", type: "標準計劃 (Standard Plan)", baseFactor: 2400 },
+        { name: "保柏 (Bupa)", category: "FLEXI", type: "靈活配自願醫保計劃", baseFactor: 3400 },
+        { name: "保柏 (Bupa)", category: "HIGH_END", type: "保柏英雄高端醫療計劃", baseFactor: 5000 },
+        { name: "中銀集團人壽 (BOC Life)", category: "STANDARD", type: "標準計劃 (Standard Plan)", baseFactor: 2100 },
+        { name: "中銀集團人壽 (BOC Life)", category: "FLEXI", type: "自願醫保靈活計劃", baseFactor: 2900 }
+    ];
+
+    const savingsData = [
+        { bank: "香港永明金融 (Sun Life)", m3: { rate: 0.032, str: "3.20%" }, m6: { rate: 0.030, str: "3.00%" }, y1: { rate: 0.028, str: "2.80%" }, note: "配合保險或理財規劃之特選方案" },
+        { bank: "匯豐銀行 (HSBC)", m3: { rate: 0.035, str: "3.50%" }, m6: { rate: 0.034, str: "3.40%" }, y1: { rate: 0.032, str: "3.20%" }, note: "指定理財客戶 / $10萬起" },
+        { bank: "中國銀行香港 (BOC)", m3: { rate: 0.035, str: "3.50%" }, m6: { rate: 0.034, str: "3.40%" }, y1: { rate: 0.032, str: "3.20%" }, note: "私人財富 / 中銀理財新資金" },
+        { bank: "恆生銀行 (Hang Seng)", m3: { rate: 0.0345, str: "3.45%" }, m6: { rate: 0.0335, str: "3.35%" }, y1: { rate: 0.0315, str: "3.15%" }, note: "優越私人理財新資金" },
+        { bank: "渣打銀行 (Standard Chartered)", m3: { rate: 0.035, str: "3.50%" }, m6: { rate: 0.034, str: "3.40%" }, y1: { rate: 0.032, str: "3.20%" }, note: "優先理財新資金" },
+        { bank: "ZA Bank (眾安銀行)", m3: { rate: 0.038, str: "3.80%" }, m6: { rate: 0.036, str: "3.60%" }, y1: { rate: 0.033, str: "3.30%" }, note: "虛擬銀行熱門優惠" },
+        { bank: "Mox Bank", m3: { rate: 0.0375, str: "3.75%" }, m6: { rate: 0.0355, str: "3.55%" }, y1: { rate: 0.0325, str: "3.25%" }, note: "迎新或指定任務利率" },
+        { bank: "富融銀行 (Fusion Bank)", m3: { rate: 0.037, str: "3.70%" }, m6: { rate: 0.035, str: "3.50%" }, y1: { rate: 0.032, str: "3.20%" }, note: "新資金優惠" },
+        { bank: "東亞銀行 (BEA)", m3: { rate: 0.034, str: "3.40%" }, m6: { rate: 0.033, str: "3.30%" }, y1: { rate: 0.031, str: "3.10%" }, note: "顯卓理財新資金" },
+        { bank: "大新銀行 (Dah Sing)", m3: { rate: 0.0345, str: "3.45%" }, m6: { rate: 0.0335, str: "3.35%" }, y1: { rate: 0.0315, str: "3.15%" }, note: "VIP 專貴客戶" }
+    ];
+
+    function loadERData() {
+        const tbody = document.getElementById('erTableBody');
+        tbody.innerHTML = "";
+        erData.forEach(item => {
+            let badgeClass = item.level === "medium" ? "status-medium" : (item.level === "long" ? "status-long" : "status-short");
+            let statusText = item.level === "medium" ? "輪候時間中等" : (item.level === "long" ? "輪候時間頗長" : "輪候時間較短");
+            tbody.innerHTML += `<tr>
+                <td>${item.cluster}</td>
+                <td><strong>${item.hospital}</strong></td>
+                <td><span class="waiting-time-alert">${item.hours}</span></td>
+                <td><span class="status-badge ${badgeClass}">${statusText}</span></td>
+            </tr>`;
+        });
+        const now = new Date();
+        document.getElementById('updateTime').innerText = `更新時間：${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+    }
+
+    function loadCompanyCheckboxes() {
+        const container = document.getElementById('companyCheckboxes');
+        container.innerHTML = "";
+        const companies = [...new Set(allProviders.map(p => p.name))];
+        
+        companies.forEach((comp, index) => {
+            const checked = index < 3 ? "checked" : "";
+            container.innerHTML += `
+                <div class="checkbox-item">
+                    <input type="checkbox" name="compCheck" value="${comp}" ${checked} onchange="limitCheckboxes(this)">
+                    <label>${comp}</label>
+                </div>
+            `;
+        });
+    }
+
+    function limitCheckboxes(element) {
+        const checkedBoxes = document.querySelectorAll('input[name="compCheck"]:checked');
+        if (checkedBoxes.length > 3) {
+            alert("最多只能同時比較 3 間保險公司。");
+            element.checked = false;
+        }
+    }
+
+    function loadSavingsData() {
+        const tbody = document.getElementById('savingsTableBody');
+        tbody.innerHTML = "";
+        const principal = 10000;
+
+        savingsData.forEach(item => {
+            let interest3M = (principal * item.m3.rate * (3 / 12)).toFixed(2);
+            let interest6M = (principal * item.m6.rate * (6 / 12)).toFixed(2);
+            let interest1Y = (principal * item.y1.rate * (12 / 12)).toFixed(2);
+
+            tbody.innerHTML += `<tr>
+                <td><strong>${item.bank}</strong></td>
+                <td><span class="rate-highlight">${item.m3.str}</span><br><small style="color:#767676;">約 $${interest3M}</small></td>
+                <td><span class="rate-highlight">${item.m6.str}</span><br><small style="color:#767676;">約 $${interest6M}</small></td>
+                <td><span class="rate-highlight">${item.y1.str}</span><br><small style="color:#767676;">約 $${interest1Y}</small></td>
+                <td>${item.note}</td>
+            </tr>`;
+        });
+    }
+
+    function switchMode() {
+        const mode = document.querySelector('input[name="viewMode"]:checked').value;
+        document.getElementById('erSection').classList.add('hidden-section');
+        document.getElementById('vhisSection').classList.add('hidden-section');
+        document.getElementById('savingsSection').classList.add('hidden-section');
+        document.getElementById('insuranceAnalysisSection').classList.add('hidden-section');
+
+        if (mode === 'er') document.getElementById('erSection').classList.remove('hidden-section');
+        else if (mode === 'vhis') document.getElementById('vhisSection').classList.remove('hidden-section');
+        else if (mode === 'savings') document.getElementById('savingsSection').classList.remove('hidden-section');
+        else if (mode === 'insuranceAnalysis') {
+            document.getElementById('insuranceAnalysisSection').classList.remove('hidden-section');
+            calculateInsuranceSummary();
+        }
+    }
+
+    window.onload = function() {
+        loadERData();
+        loadCompanyCheckboxes();
+        loadSavingsData();
+        document.getElementById('dataPage').style.display = 'none';
+        document.getElementById('contactPage').style.display = 'none';
+    };
+
+    function calculateVHIS() {
+        const ageInput = document.getElementById('age').value;
+        const gender = document.getElementById('gender').value;
+        const selectedCategory = document.getElementById('planType').value;
+        const deductible = parseInt(document.getElementById('deductible').value);
+        const checkedComps = Array.from(document.querySelectorAll('input[name="compCheck"]:checked')).map(cb => cb.value);
+
+        if (checkedComps.length === 0) {
+            alert("請至少勾選一間保險公司進行對比。");
+            return;
+        }
+
+        const age = parseInt(ageInput);
+        if (isNaN(age) || age < 0 || age > 100) {
+            alert("請輸入介乎 0 至 100 的有效年齡。");
+            return;
+        }
+
+        document.getElementById('resultsCard').style.display = 'block';
+        document.getElementById('displayAge').innerText = age;
+        document.getElementById('displayGender').innerText = gender === 'M' ? '男性' : '女性';
+
+        let ageMultiplier = 1.0;
+        if (age <= 10) ageMultiplier = 0.55;
+        else if (age <= 20) ageMultiplier = 0.68;
+        else if (age <= 30) ageMultiplier = 0.98;
+        else if (age <= 40) ageMultiplier = 1.30;
+        else if (age <= 50) ageMultiplier = 1.95;
+        else if (age <= 60) ageMultiplier = 3.50;
+        else if (age <= 70) ageMultiplier = 6.00;
+        else ageMultiplier = 9.50 + (age - 70) * 0.5;
+
+        let genderFactor = 1.0;
+        if (gender === 'F' && age >= 20 && age <= 45) genderFactor = 1.12; 
+        else if (gender === 'M' && age >= 45) genderFactor = 1.08; 
+
+        const gridContainer = document.getElementById('comparisonGrid');
+        gridContainer.innerHTML = "";
+        let count = 0;
+
+        allProviders.forEach(provider => {
+            if (!checkedComps.includes(provider.name)) return;
+            if (selectedCategory !== 'ALL' && provider.category !== selectedCategory) return;
+
+            let finalBase = provider.baseFactor;
+            if (provider.category === 'HIGH_END') {
+                if (deductible === 15000) finalBase *= 0.75;
+                else if (deductible === 20000) finalBase *= 0.65;
+                else if (deductible === 50000) finalBase *= 0.45;
+                else if (deductible === 75000) finalBase *= 0.35;
+            }
+
+            let finalPremium = Math.round(finalBase * ageMultiplier * genderFactor);
+            let monthlyAvg = (finalPremium / 12).toFixed(1);
+            let badgeHtml = provider.category === 'HIGH_END' ? '<span class="badge-high-end">高端醫療</span>' : (provider.category === 'FLEXI' ? '<span class="badge-flexi">靈活計劃</span>' : '<span class="badge-standard">標準計劃</span>');
+
+            gridContainer.innerHTML += `
+                <div class="company-card-item">
+                    <h4>${provider.name}</h4>
+                    <ul class="plan-detail-list">
+                        <li><span class="label">計劃類別</span> <span class="value">${badgeHtml}</span></li>
+                        <li><span class="label">計劃名稱</span> <span class="value" style="text-align:right;">${provider.type}</span></li>
+                        ${provider.category === 'HIGH_END' ? `<li><span class="label">墊底費 (自付費)</span> <span class="value">$${deductible.toLocaleString()}</span></li>` : ''}
+                        <li><span class="label">每年保費參考</span> <span class="value price-highlight">$${finalPremium.toLocaleString()}</span></li>
+                        <li><span class="label">每月平均 (約)</span> <span class="value" style="color: var(--primary-accent); font-size:16px;">$${Number(monthlyAvg).toLocaleString()}</span></li>
+                    </ul>
+                </div>
+            `;
+            count++;
+        });
+
+        if (count === 0) {
+            gridContainer.innerHTML = `<div style="grid-column: 1 / -1; text-align: center; color: var(--sub-text); padding: 20px;">在您勾選的公司中找不到符合該計劃級別的產品。</div>`;
+        }
+    }
+
+    // ==========================================
+    // 保險與資產配置分析專屬 JavaScript 邏輯
+    // ==========================================
+    let insGapChartInstance = null;
+    let insCalculatedAge = '-';
+
+    function formatCurrency(amount) {
+        return 'HK$ ' + Number(amount).toLocaleString();
+    }
+
+    function calculateInsuranceAge() {
+        const dobInput = document.getElementById('insClientDOB').value;
+        if (!dobInput) {
+            insCalculatedAge = '-';
+            return;
+        }
+        const dob = new Date(dobInput);
+        const today = new Date();
+        let age = today.getFullYear() - dob.getFullYear();
+        const m = today.getMonth() - dob.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
+            age--;
+        }
+        insCalculatedAge = age >= 0 ? age : '-';
+        calculateInsuranceSummary();
+    }
+
+    function autoCalcInsuranceEndDate(element) {
+        const row = element.closest('.policy-item');
+        const startDateInput = row.querySelector('.policy-startdate').value;
+        const termInput = parseInt(row.querySelector('.policy-term').value) || 0;
+        const endDateInput = row.querySelector('.policy-enddate');
+
+        if (startDateInput && termInput > 0) {
+            const startDate = new Date(startDateInput);
+            startDate.setFullYear(startDate.getFullYear() + termInput);
+            const year = startDate.getFullYear();
+            const month = String(startDate.getMonth() + 1).padStart(2, '0');
+            const day = String(startDate.getDate()).padStart(2, '0');
+            endDateInput.value = `${year}-${month}-${day}`;
+        }
+    }
+
+    function addInsurancePolicyRow() {
+        const container = document.getElementById('insPoliciesContainer');
+        const rowHTML = `
+            <div class="policy-item bg-[#f9f8f6] border border-stone-200 p-4 rounded-xl relative space-y-3">
+                <button type="button" onclick="removeInsurancePolicyRow(this)" class="absolute top-3 right-3 text-stone-400 hover:text-red-500 text-xs">✕</button>
+                
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-stone-500 mb-1">機構 / 保險公司</label>
+                        <input type="text" placeholder="例如：友邦保險 / 永明金融" class="policy-company w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-stone-500 mb-1">保單號碼 / 帳戶編號</label>
+                        <input type="text" placeholder="例如：POL-001" class="policy-number w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-3 gap-3">
+                    <div>
+                        <label class="block text-[10px] text-stone-500 mb-1">保障/資產類型</label>
+                        <select class="policy-type w-full px-2 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                            <option value="life">人壽保險</option>
+                            <option value="ci">危疾保險</option>
+                            <option value="accident">意外保險</option>
+                            <option value="medical">醫療保險</option>
+                            <option value="savings">儲蓄/年金 (退休)</option>
+                            <option value="mpf">MPF 強積金 (退休)</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-[10px] text-stone-500 mb-1">保額 / 權益總值 (HKD)</label>
+                        <input type="number" placeholder="0" class="policy-suminsured w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                    </div>
+                    <div>
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-[10px] text-stone-500">供款金額 (HKD)</label>
+                            <select class="policy-freq text-[9px] bg-stone-100 border border-stone-200 rounded px-1 text-stone-600 focus:outline-none">
+                                <option value="year">每年</option>
+                                <option value="month">每月</option>
+                            </select>
+                        </div>
+                        <input type="number" placeholder="0" class="policy-premium w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-4 gap-2 pt-2 border-t border-stone-200">
+                    <div>
+                        <label class="block text-[9px] text-stone-400">生效日期</label>
+                        <input type="date" onchange="autoCalcInsuranceEndDate(this)" class="policy-startdate w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] text-stone-400">供款年期</label>
+                        <input type="number" placeholder="0" onchange="autoCalcInsuranceEndDate(this)" class="policy-term w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] text-stone-400">現金價值 / 結餘</label>
+                        <input type="number" placeholder="0" class="policy-cashvalue w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                    </div>
+                    <div>
+                        <label class="block text-[9px] text-stone-400">到期日 (自動)</label>
+                        <input type="date" class="policy-enddate w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                    </div>
+                </div>
+            </div>
+        `;
+        container.insertAdjacentHTML('beforeend', rowHTML);
+    }
+
+    function removeInsurancePolicyRow(button) {
+        const row = button.closest('.policy-item');
+        const container = document.getElementById('insPoliciesContainer');
+        if (container.querySelectorAll('.policy-item').length > 1) {
+            row.remove();
+            calculateInsuranceSummary();
+        } else {
+            row.querySelectorAll('input').forEach(input => input.value = '');
+            calculateInsuranceSummary();
+        }
+    }
+
+    function calculateInsuranceSummary() {
+        const name = document.getElementById('insClientName').value.trim() || '未填寫';
+        const gender = document.getElementById('insClientGender').value;
+        
+        const targetLife = parseFloat(document.getElementById('insTargetLife').value) || 0;
+        const targetCI = parseFloat(document.getElementById('insTargetCI').value) || 0;
+        const targetAccident = parseFloat(document.getElementById('insTargetAccident').value) || 0;
+        const targetRetirement = parseFloat(document.getElementById('insTargetRetirement').value) || 0;
+
+        let totalExistingLife = 0;
+        let totalExistingCI = 0;
+        let totalExistingAccident = 0;
+        let totalExistingRetirement = 0;
+        let totalAnnualPremium = 0;
+        let totalMonthlyEquivalent = 0;
+        let totalCashValue = 0;
+        let policyCount = 0;
+
+        const policyItems = document.querySelectorAll('#insPoliciesContainer .policy-item');
+        const listContainer = document.getElementById('insPolicyListSummary');
+        listContainer.innerHTML = ''; 
+
+        let hasValidPolicy = false;
+
+        policyItems.forEach(item => {
+            const company = item.querySelector('.policy-company').value.trim();
+            const number = item.querySelector('.policy-number').value.trim();
+            const typeSelect = item.querySelector('.policy-type');
+            const typeText = typeSelect.options[typeSelect.selectedIndex].text;
+            const typeVal = typeSelect.value;
+            const sumInsured = parseFloat(item.querySelector('.policy-suminsured').value) || 0;
+            
+            const rawPremium = parseFloat(item.querySelector('.policy-premium').value) || 0;
+            const freq = item.querySelector('.policy-freq').value;
+
+            let annualPremium = 0;
+            let monthlyPremium = 0;
+
+            if (freq === 'month') {
+                monthlyPremium = rawPremium;
+                annualPremium = rawPremium * 12;
+            } else {
+                annualPremium = rawPremium;
+                monthlyPremium = rawPremium / 12;
+            }
+
+            const cashValue = parseFloat(item.querySelector('.policy-cashvalue').value) || 0;
+
+            if (company || number || sumInsured > 0 || rawPremium > 0 || cashValue > 0) {
+                hasValidPolicy = true;
+                policyCount++;
+                totalAnnualPremium += annualPremium;
+                totalMonthlyEquivalent += monthlyPremium;
+                totalCashValue += cashValue;
+
+                if (typeVal === 'life') totalExistingLife += sumInsured;
+                else if (typeVal === 'ci') totalExistingCI += sumInsured;
+                else if (typeVal === 'accident') totalExistingAccident += sumInsured;
+                else if (typeVal === 'savings') {
+                    totalExistingLife += sumInsured;
+                    totalExistingRetirement += cashValue;
+                }
+                else if (typeVal === 'mpf') {
+                    totalExistingRetirement += cashValue || sumInsured;
+                }
+
+                const displayCompany = company || '未命名機構';
+                const displayNum = number ? `(${number})` : '';
+                const freqLabel = freq === 'month' ? '月供' : '年供';
+
+                const listItemHTML = `
+                    <div class="bg-[#f9f8f6] border border-stone-200/60 p-2 rounded-lg flex justify-between items-center text-[11px]">
+                        <div>
+                            <span class="font-semibold text-stone-800">${displayCompany}</span> 
+                            <span class="text-stone-400">${displayNum}</span>
+                            <div class="text-stone-500 text-[10px] mt-0.5">${typeText}：數值 <span class="font-medium text-stone-800">${formatCurrency(sumInsured || cashValue)}</span></div>
+                        </div>
+                        <div class="text-right text-[10px] text-stone-500">
+                            ${freqLabel}: ${formatCurrency(rawPremium)}
+                        </div>
+                    </div>
+                `;
+                listContainer.insertAdjacentHTML('beforeend', listItemHTML);
+            }
+        });
+
+        if (!hasValidPolicy) {
+            listContainer.innerHTML = '<span class="text-stone-400">尚未新增任何保單或 MPF</span>';
+        }
+
+        const lifeGap = Math.max(0, targetLife - totalExistingLife);
+        const ciGap = Math.max(0, targetCI - totalExistingCI);
+        const accidentGap = Math.max(0, targetAccident - totalExistingAccident);
+        const retirementGap = Math.max(0, targetRetirement - totalExistingRetirement);
+
+        document.getElementById('insSummaryHeader').innerHTML = `客戶：<span class="font-semibold text-stone-900">${name}</span> (性別：${gender} | 年齡：${insCalculatedAge})`;
+        document.getElementById('insDispPolicyCount').innerText = policyCount;
+        document.getElementById('insDispMonthlyPremium').innerText = formatCurrency(Math.round(totalMonthlyEquivalent));
+        document.getElementById('insDispAnnualPremium').innerText = formatCurrency(totalAnnualPremium);
+        document.getElementById('insDispTotalCashValue').innerText = formatCurrency(totalCashValue);
+
+        document.getElementById('insLifeGapText').innerText = formatCurrency(lifeGap);
+        document.getElementById('insCiGapText').innerText = formatCurrency(ciGap);
+        document.getElementById('insAccidentGapText').innerText = formatCurrency(accidentGap);
+        document.getElementById('insRetirementGapText').innerText = formatCurrency(retirementGap);
+
+        updateInsuranceBarChart(
+            [totalExistingLife, totalExistingCI, totalExistingAccident, totalExistingRetirement],
+            [targetLife, targetCI, targetAccident, targetRetirement]
+        );
+    }
+
+    function updateInsuranceBarChart(existingData, targetData) {
+        const ctx = document.getElementById('insGapChart').getContext('2d');
+        if (insGapChartInstance) insGapChartInstance.destroy();
+
+        insGapChartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['人壽', '危疾', '意外', '退休金'],
+                datasets: [
+                    {
+                        label: '現有累積',
+                        data: existingData,
+                        backgroundColor: '#78716c',
+                        borderRadius: 4
+                    },
+                    {
+                        label: '理想目標',
+                        data: targetData,
+                        backgroundColor: '#e7e5e4',
+                        borderRadius: 4
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: { grid: { display: false } },
+                    y: { 
+                        beginAtZero: true,
+                        ticks: {
+                            font: { size: 9 },
+                            color: '#a8a29e',
+                            callback: function(value) {
+                                if (value >= 1000000) return (value / 1000000) + 'M';
+                                if (value >= 1000) return (value / 1000) + 'k';
+                                return value;
+                            }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { 
+                        position: 'bottom', 
+                        labels: { boxWidth: 10, font: { size: 10, family: 'Noto Sans JP' }, color: '#44403c' } 
+                    }
+                }
+            }
+        });
+    }
+
+    function exportInsurancePDF() {
+        calculateInsuranceSummary();
+        window.print();
+    }
+
+    function copyInsuranceWhatsAppReport() {
+        calculateInsuranceSummary();
+
+        const name = document.getElementById('insClientName').value.trim() || '未填寫';
+        const gender = document.getElementById('insClientGender').value;
+        const policyCount = document.getElementById('insDispPolicyCount').innerText;
+        const monthlyPremium = document.getElementById('insDispMonthlyPremium').innerText;
+        const annualPremium = document.getElementById('insDispAnnualPremium').innerText;
+        const totalCash = document.getElementById('insDispTotalCashValue').innerText;
+        
+        const lifeGap = document.getElementById('insLifeGapText').innerText;
+        const ciGap = document.getElementById('insCiGapText').innerText;
+        const accidentGap = document.getElementById('insAccidentGapText').innerText;
+        const retirementGap = document.getElementById('insRetirementGapText').innerText;
+
+        let policiesText = '';
+        document.querySelectorAll('#insPoliciesContainer .policy-item').forEach((item, index) => {
+            const comp = item.querySelector('.policy-company').value.trim();
+            const type = item.querySelector('.policy-type').selectedOptions[0].text;
+            const sum = item.querySelector('.policy-suminsured').value;
+            const cash = item.querySelector('.policy-cashvalue').value;
+            const prem = item.querySelector('.policy-premium').value;
+            const freq = item.querySelector('.policy-freq').value === 'month' ? '月供' : '年供';
+
+            if (comp || sum || cash || prem) {
+                policiesText += `  ${index + 1}. [${comp || '其他'}] ${type} - 金額: HK$${Number(sum || cash || 0).toLocaleString()} (${freq}: $${Number(prem || 0).toLocaleString()})\n`;
+            }
+        });
+
+        const reportText = `🛡️ *保障與資產配置分析報告*\n` +
+                           `━━━━━━━━━━━━━━━\n` +
+                           `👤 客戶：${name} (性別：${gender} | 年齡：${insCalculatedAge}歲)\n` +
+                           `📋 現有保單/MPF數：${policyCount} 份\n` +
+                           (policiesText ? `\n📌 *明細摘要：*\n${policiesText}\n` : '') +
+                           `💰 供款支出：${monthlyPremium} (年繳總額: ${annualPremium})\n` +
+                           `💎 現金價值/MPF總額：${totalCash}\n\n` +
+                           `📊 *保障缺口狀況*\n` +
+                           `• 人壽保障缺口：${lifeGap}\n` +
+                           `• 危疾保障缺口：${ciGap}\n` +
+                           `• 意外保障缺口：${accidentGap}\n` +
+                           `• 退休金缺口：${retirementGap}\n` +
+                           `━━━━━━━━━━━━━━━\n` +
+                           `✨ 專業理財規劃，為您築起安心防線。`;
+
+        navigator.clipboard.writeText(reportText).then(() => {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('hidden');
+            setTimeout(() => {
+                toast.classList.add('hidden');
+            }, 2500);
+        });
+    }
+</script>
+
+</body>
+</html>
