@@ -8,6 +8,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- Chart.js CDN -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Vue 3 CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
     <!-- Google Fonts: 日式極簡明體與黑體 -->
     <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
     <style>
@@ -210,7 +212,7 @@
 
         .radio-group {
             display: inline-flex;
-            gap: 20px;
+            gap: 15px;
             font-size: 14px;
             cursor: pointer;
             flex-wrap: wrap;
@@ -417,7 +419,6 @@
         }
 
         .waiting-time-alert { font-weight: 500; color: var(--accent-color); }
-        .rate-highlight { font-weight: 500; color: var(--success-color); font-size: 15px; }
 
         .badge-standard { background: #e8ede4; color: #386641; padding: 3px 8px; border-radius: 3px; font-size: 11px; }
         .badge-flexi { background: #e2ecf2; color: #3d5a80; padding: 3px 8px; border-radius: 3px; font-size: 11px; }
@@ -453,7 +454,11 @@
 
         .hidden-section { display: none; }
 
-        /* 專門為列印/匯出 PDF 設定的樣式 */
+        .print-report-title {
+            display: none;
+        }
+
+        /* 專門設定列印與匯出 PDF 時的版面乾淨度 */
         @media print {
             body {
                 background-color: #ffffff !important;
@@ -463,6 +468,23 @@
             }
             .print-only {
                 display: block !important;
+            }
+            /* 列印時強制隱藏頂部選單及項目選擇卡片 */
+            .mode-selector-card {
+                display: none !important;
+            }
+            header {
+                display: none !important;
+            }
+            .print-report-title {
+                display: block !important;
+                text-align: center;
+                font-size: 22px;
+                font-weight: bold;
+                margin-bottom: 20px;
+                font-family: 'Noto Serif JP', serif;
+                border-bottom: 2px solid #2c2c2c;
+                padding-bottom: 10px;
             }
             input, select {
                 border: none !important;
@@ -510,10 +532,10 @@
                         <input type="radio" name="viewMode" value="vhis" onchange="switchMode()"> 自願醫保保費查詢
                     </label>
                     <label>
-                        <input type="radio" name="viewMode" value="savings" onchange="switchMode()"> $1萬定期存款試算
+                        <input type="radio" name="viewMode" value="insuranceAnalysis" onchange="switchMode()"> 保險與資產配置分析
                     </label>
                     <label>
-                        <input type="radio" name="viewMode" value="insuranceAnalysis" onchange="switchMode()"> 保險與資產配置分析
+                        <input type="radio" name="viewMode" value="irrCalculator" onchange="switchMode()"> 儲蓄保險回報與 IRR 比較
                     </label>
                 </div>
             </div>
@@ -593,40 +615,23 @@
                 </div>
             </div>
 
-            <!-- $1萬定期存款利息試算模組 -->
-            <div id="savingsSection" class="card hidden-section">
-                <h2 class="section-title">港幣 $10,000 定期存款利息試算 (3個月 / 6個月 / 1年)</h2>
-                <p style="color: var(--sub-text); font-size: 13px; margin-bottom: 20px;">假設存入本金為 $10,000 港元，以下為各大銀行在不同存期下的年利率及預估利息：</p>
-                
-                <table>
-                    <thead>
-                        <tr>
-                            <th>銀行名稱</th>
-                            <th>3個月 (年利率 / 利息)</th>
-                            <th>6個月 (年利率 / 利息)</th>
-                            <th>1年 (年利率 / 利息)</th>
-                            <th>備註 / 條款要求</th>
-                        </tr>
-                    </thead>
-                    <tbody id="savingsTableBody"></tbody>
-                </table>
-            </div>
-
-            <!-- 保險與資產配置分析模組 (新增) -->
+            <!-- 保險與資產配置分析模組 -->
             <div id="insuranceAnalysisSection" class="card hidden-section">
+                <!-- 專為列印/PDF準備的專業標題 -->
+                <div id="printReportTitle" class="print-report-title">專業保險與資產配置分析報告</div>
+
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <!-- 左側：輸入表單 (佔 7 格) -->
+                    <!-- 左側：輸入表單 -->
                     <div class="lg:col-span-7 bg-[#fffefc] rounded-xl shadow-sm border border-stone-200 p-6 space-y-6 no-print">
                         <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
                             <span class="w-2 h-2 rounded-full bg-stone-700"></span>
                             <h2 class="text-sm font-medium tracking-wide text-stone-850 serif-title">一、 客戶與保單資料</h2>
                         </div>
 
-                        <!-- 基本資料 -->
                         <div class="grid grid-cols-3 gap-3">
                             <div>
                                 <label class="block text-[11px] font-medium text-stone-500 mb-1">客戶姓名</label>
-                                <input type="text" id="insClientName" value="" placeholder="請輸入姓名" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-stone-500">
+                                <input type="text" id="insClientName" value="" placeholder="請輸入姓名" oninput="updatePrintTitle()" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-stone-500">
                             </div>
                             <div>
                                 <label class="block text-[11px] font-medium text-stone-500 mb-1">性別</label>
@@ -641,7 +646,6 @@
                             </div>
                         </div>
 
-                        <!-- 現有保單清單區 -->
                         <div class="space-y-3">
                             <div class="flex justify-between items-center">
                                 <h3 class="text-[11px] font-medium text-stone-500 uppercase tracking-wider">現有保單 / MPF 明細</h3>
@@ -651,7 +655,6 @@
                             </div>
 
                             <div id="insPoliciesContainer" class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
-                                <!-- 空白保單範本 -->
                                 <div class="policy-item bg-[#f9f8f6] border border-stone-200 p-4 rounded-xl relative space-y-3">
                                     <button type="button" onclick="removeInsurancePolicyRow(this)" class="absolute top-3 right-3 text-stone-400 hover:text-red-500 text-xs">✕</button>
                                     
@@ -716,7 +719,6 @@
                             </div>
                         </div>
 
-                        <!-- 理想目標 -->
                         <div class="space-y-3 pt-2">
                             <div class="flex items-center space-x-2 border-b border-stone-100 pb-2">
                                 <span class="w-2 h-2 rounded-full bg-stone-700"></span>
@@ -747,7 +749,7 @@
                         </button>
                     </div>
 
-                    <!-- 右側：總結與分析報告 (佔 5 格) -->
+                    <!-- 右側：總結與分析報告 -->
                     <div class="lg:col-span-5 bg-[#fffefc] rounded-xl shadow-sm border border-stone-200 p-6 flex flex-col justify-between space-y-6">
                         <div class="space-y-4">
                             <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
@@ -755,15 +757,15 @@
                                 <h2 class="text-sm font-medium tracking-wide text-stone-850 serif-title">三、 缺口與資產總結</h2>
                             </div>
 
-                            <!-- 摘要卡片 -->
                             <div class="bg-[#f9f8f6] p-4 rounded-xl border border-stone-200/60 space-y-1.5 text-xs">
                                 <p class="font-medium text-stone-800" id="insSummaryHeader">客戶：<span class="font-semibold text-stone-900">未填寫</span> (性別：- | 年齡：-)</p>
                                 <p class="text-stone-500">有效保單/MPF數：<span id="insDispPolicyCount" class="font-medium text-stone-800">0</span> 份</p>
                                 <p class="text-stone-500">供款支出：<span id="insDispMonthlyPremium" class="font-medium text-stone-800">HK$0 /月</span> (年繳: <span id="insDispAnnualPremium" class="font-medium text-stone-800">HK$0</span>)</p>
-                                <p class="text-stone-500">現金價值/MPF結餘總額：<span id="insDispTotalCashValue" class="font-medium text-stone-800">HK$0</span></p>
+                                <p class="text-stone-500">保單現金價值總額：<span id="insDispCashValue" class="font-medium text-stone-800">HK$0</span></p>
+                                <p class="text-stone-500">MPF 強積金結餘總額：<span id="insDispMpfValue" class="font-medium text-stone-800">HK$0</span></p>
+                                <p class="text-stone-500 font-semibold text-stone-700 pt-1 border-t border-stone-200/60">總資產結餘 (現金價值 + MPF)：<span id="insDispTotalCashValue" class="font-bold text-stone-900">HK$0</span></p>
                             </div>
 
-                            <!-- 現有保單內容清單 -->
                             <div>
                                 <h4 class="font-medium text-stone-700 mb-1.5 text-[11px] uppercase tracking-wider">現有保單與 MPF 明細清單</h4>
                                 <div id="insPolicyListSummary" class="space-y-1.5 max-h-28 overflow-y-auto pr-1 text-stone-500 text-[11px]">
@@ -771,7 +773,6 @@
                                 </div>
                             </div>
 
-                            <!-- 缺口清單 -->
                             <div class="space-y-2">
                                 <div class="flex justify-between text-xs py-1 border-b border-stone-100">
                                     <span class="text-stone-500">人壽保障缺口</span>
@@ -791,13 +792,11 @@
                                 </div>
                             </div>
 
-                            <!-- 雙數據對比長條圖 -->
                             <div class="relative h-40 w-full flex items-center justify-center pt-2">
                                 <canvas id="insGapChart"></canvas>
                             </div>
                         </div>
 
-                        <!-- 按鈕區 (PDF 與 WhatsApp) -->
                         <div class="space-y-2 no-print">
                             <button onclick="exportInsurancePDF()" class="w-full bg-stone-800 hover:bg-stone-900 text-stone-100 font-medium py-3 rounded-xl transition-colors text-xs tracking-wider flex items-center justify-center space-x-2">
                                 <span>📄 匯出 PDF 分析報告</span>
@@ -810,14 +809,100 @@
                 </div>
             </div>
 
-            <!-- 底部新增的「聯絡我們」按鈕專屬區域 -->
+            <!-- 儲蓄保險回報與 IRR 比較模組 -->
+            <div id="irrCalculatorSection" class="card hidden-section">
+                <div id="irrApp">
+                    <div class="flex flex-col sm:flex-row justify-between items-center mb-8 border-b pb-4 gap-4">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-900">💡 儲蓄保險回報與 IRR 比較系統</h2>
+                            <p class="text-xs text-slate-500">多計劃並排對比、總已付保費、淨收益與內部回報率分析</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center bg-white border rounded-lg px-3 py-1.5 shadow-sm">
+                                <span class="text-xs font-semibold text-slate-500 mr-2">貨幣：</span>
+                                <select v-model="currency" class="text-sm font-bold text-blue-600 bg-transparent focus:outline-none cursor-pointer">
+                                    <option value="HKD">HKD (港幣)</option>
+                                    <option value="USD">USD (美金)</option>
+                                </select>
+                            </div>
+                            <button @click="clearAllPlans" class="bg-white border text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm">清空所有計劃</button>
+                        </div>
+                    </div>
+
+                    <div class="space-y-6">
+                        <div class="bg-[#fcfaf7] p-6 rounded-xl shadow-sm border border-slate-100">
+                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+                                <div>
+                                    <h3 class="text-base font-bold text-slate-900">⚖️ 儲蓄計劃並排比較 ({{ currency }})</h3>
+                                    <p class="text-xs text-slate-500">輸入唔同保險公司或年期嘅儲蓄計劃，即時計算並突顯 IRR 最高之方案。</p>
+                                </div>
+                                <button @click="addPlan" class="bg-slate-800 text-white text-xs px-4 py-2 rounded-lg font-medium hover:bg-slate-900 transition shadow-sm">+ 新增比較計劃</button>
+                            </div>
+                        </div>
+
+                        <div v-if="comparisonPlans.length === 0" class="bg-white p-12 rounded-xl shadow-sm border border-slate-100 text-center text-slate-400 text-sm">
+                            暫未有比較計劃，請點擊上方「+ 新增比較計劃」開始試算。
+                        </div>
+                        
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <div v-for="(plan, index) in comparisonPlans" :key="plan.id" class="bg-white p-6 rounded-xl shadow-sm border relative transition" :class="plan.id === bestPlanId ? 'border-emerald-500 ring-2 ring-emerald-100' : 'border-slate-100'">
+                                <div class="flex justify-between items-center mb-4 pb-2 border-b">
+                                    <input v-model="plan.name" type="text" placeholder="計劃名稱 (例如：AIA 盈御)" class="font-bold text-slate-800 text-sm bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none px-1 w-2/3">
+                                    <div class="flex items-center gap-2">
+                                        <span v-if="plan.id === bestPlanId && calculateIRR(plan) > 0" class="bg-emerald-100 text-emerald-700 text-[11px] px-2 py-0.5 rounded-full font-bold">⭐ IRR 最高</span>
+                                        <button @click="removePlan(plan.id)" class="text-slate-400 hover:text-rose-500 text-xs px-2 py-1 transition">刪除</button>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-2 gap-3 mb-4">
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">每年保費 ({{ currency }})</label>
+                                        <input v-model.number="plan.annualPremium" type="number" placeholder="0" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">供款年期 (年)</label>
+                                        <input v-model.number="plan.payYears" type="number" placeholder="5" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">試算目標年份</label>
+                                        <input v-model.number="plan.targetYear" type="number" placeholder="10" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-xs font-semibold text-slate-500 mb-1">預期總退保價值</label>
+                                        <input v-model.number="plan.surrenderValue" type="number" placeholder="0" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                    </div>
+                                </div>
+
+                                <div class="bg-slate-50 p-4 rounded-lg grid grid-cols-3 gap-2 text-center">
+                                    <div>
+                                        <p class="text-[10px] text-slate-400 uppercase font-semibold">總已付保費</p>
+                                        <p class="text-xs font-bold text-slate-800 mt-0.5">{{ currencySymbol }} {{ calculatePaid(plan).toLocaleString() }}</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-slate-400 uppercase font-semibold">淨收益</p>
+                                        <p class="text-xs font-bold text-emerald-600 mt-0.5" :class="calculateProfit(plan) < 0 ? 'text-rose-500' : ''">
+                                            {{ calculateProfit(plan) >= 0 ? '+' : '' }}{{ currencySymbol }} {{ calculateProfit(plan).toLocaleString() }}
+                                        </p>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] text-slate-400 uppercase font-semibold">預估 IRR</p>
+                                        <p class="text-xs font-bold text-blue-600 mt-0.5">{{ calculateIRR(plan) }} %</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部聯絡我們 -->
             <div class="footer-contact-bar">
                 <button class="btn-contact" onclick="goToPage('contactPage')">聯絡我們</button>
             </div>
         </div>
     </div>
 
-    <!-- 3. 聯絡我們表單頁面 (Contact Page) -->
+    <!-- 3. 聯絡我們表單頁面 -->
     <div id="contactPage" class="page">
         <div class="container">
             <header>
@@ -853,7 +938,7 @@
 
     <!-- 複製成功提示 Toast -->
     <div id="toast" class="fixed bottom-6 right-6 bg-stone-800 text-stone-100 px-4 py-2.5 rounded-xl text-xs shadow-lg hidden transition-all no-print">
-        已成功複製報告，可直接貼上至 WhatsApp！
+        已成功複製專業報告，可直接貼上至 WhatsApp！
     </div>
 
 <script>
@@ -960,19 +1045,6 @@
         { name: "中銀集團人壽 (BOC Life)", category: "FLEXI", type: "自願醫保靈活計劃", baseFactor: 2900 }
     ];
 
-    const savingsData = [
-        { bank: "香港永明金融 (Sun Life)", m3: { rate: 0.032, str: "3.20%" }, m6: { rate: 0.030, str: "3.00%" }, y1: { rate: 0.028, str: "2.80%" }, note: "配合保險或理財規劃之特選方案" },
-        { bank: "匯豐銀行 (HSBC)", m3: { rate: 0.035, str: "3.50%" }, m6: { rate: 0.034, str: "3.40%" }, y1: { rate: 0.032, str: "3.20%" }, note: "指定理財客戶 / $10萬起" },
-        { bank: "中國銀行香港 (BOC)", m3: { rate: 0.035, str: "3.50%" }, m6: { rate: 0.034, str: "3.40%" }, y1: { rate: 0.032, str: "3.20%" }, note: "私人財富 / 中銀理財新資金" },
-        { bank: "恆生銀行 (Hang Seng)", m3: { rate: 0.0345, str: "3.45%" }, m6: { rate: 0.0335, str: "3.35%" }, y1: { rate: 0.0315, str: "3.15%" }, note: "優越私人理財新資金" },
-        { bank: "渣打銀行 (Standard Chartered)", m3: { rate: 0.035, str: "3.50%" }, m6: { rate: 0.034, str: "3.40%" }, y1: { rate: 0.032, str: "3.20%" }, note: "優先理財新資金" },
-        { bank: "ZA Bank (眾安銀行)", m3: { rate: 0.038, str: "3.80%" }, m6: { rate: 0.036, str: "3.60%" }, y1: { rate: 0.033, str: "3.30%" }, note: "虛擬銀行熱門優惠" },
-        { bank: "Mox Bank", m3: { rate: 0.0375, str: "3.75%" }, m6: { rate: 0.0355, str: "3.55%" }, y1: { rate: 0.0325, str: "3.25%" }, note: "迎新或指定任務利率" },
-        { bank: "富融銀行 (Fusion Bank)", m3: { rate: 0.037, str: "3.70%" }, m6: { rate: 0.035, str: "3.50%" }, y1: { rate: 0.032, str: "3.20%" }, note: "新資金優惠" },
-        { bank: "東亞銀行 (BEA)", m3: { rate: 0.034, str: "3.40%" }, m6: { rate: 0.033, str: "3.30%" }, y1: { rate: 0.031, str: "3.10%" }, note: "顯卓理財新資金" },
-        { bank: "大新銀行 (Dah Sing)", m3: { rate: 0.0345, str: "3.45%" }, m6: { rate: 0.0335, str: "3.35%" }, y1: { rate: 0.0315, str: "3.15%" }, note: "VIP 專貴客戶" }
-    ];
-
     function loadERData() {
         const tbody = document.getElementById('erTableBody');
         tbody.innerHTML = "";
@@ -1014,46 +1086,27 @@
         }
     }
 
-    function loadSavingsData() {
-        const tbody = document.getElementById('savingsTableBody');
-        tbody.innerHTML = "";
-        const principal = 10000;
-
-        savingsData.forEach(item => {
-            let interest3M = (principal * item.m3.rate * (3 / 12)).toFixed(2);
-            let interest6M = (principal * item.m6.rate * (6 / 12)).toFixed(2);
-            let interest1Y = (principal * item.y1.rate * (12 / 12)).toFixed(2);
-
-            tbody.innerHTML += `<tr>
-                <td><strong>${item.bank}</strong></td>
-                <td><span class="rate-highlight">${item.m3.str}</span><br><small style="color:#767676;">約 $${interest3M}</small></td>
-                <td><span class="rate-highlight">${item.m6.str}</span><br><small style="color:#767676;">約 $${interest6M}</small></td>
-                <td><span class="rate-highlight">${item.y1.str}</span><br><small style="color:#767676;">約 $${interest1Y}</small></td>
-                <td>${item.note}</td>
-            </tr>`;
-        });
-    }
-
     function switchMode() {
         const mode = document.querySelector('input[name="viewMode"]:checked').value;
         document.getElementById('erSection').classList.add('hidden-section');
         document.getElementById('vhisSection').classList.add('hidden-section');
-        document.getElementById('savingsSection').classList.add('hidden-section');
         document.getElementById('insuranceAnalysisSection').classList.add('hidden-section');
+        document.getElementById('irrCalculatorSection').classList.add('hidden-section');
 
         if (mode === 'er') document.getElementById('erSection').classList.remove('hidden-section');
         else if (mode === 'vhis') document.getElementById('vhisSection').classList.remove('hidden-section');
-        else if (mode === 'savings') document.getElementById('savingsSection').classList.remove('hidden-section');
         else if (mode === 'insuranceAnalysis') {
             document.getElementById('insuranceAnalysisSection').classList.remove('hidden-section');
             calculateInsuranceSummary();
+        }
+        else if (mode === 'irrCalculator') {
+            document.getElementById('irrCalculatorSection').classList.remove('hidden-section');
         }
     }
 
     window.onload = function() {
         loadERData();
         loadCompanyCheckboxes();
-        loadSavingsData();
         document.getElementById('dataPage').style.display = 'none';
         document.getElementById('contactPage').style.display = 'none';
     };
@@ -1142,6 +1195,16 @@
 
     function formatCurrency(amount) {
         return 'HK$ ' + Number(amount).toLocaleString();
+    }
+
+    function updatePrintTitle() {
+        const nameInput = document.getElementById('insClientName').value.trim();
+        const titleEl = document.getElementById('printReportTitle');
+        if (nameInput) {
+            titleEl.innerText = `${nameInput}的分析報告`;
+        } else {
+            titleEl.innerText = `專業保險與資產配置分析報告`;
+        }
     }
 
     function calculateInsuranceAge() {
@@ -1272,7 +1335,8 @@
         let totalExistingRetirement = 0;
         let totalAnnualPremium = 0;
         let totalMonthlyEquivalent = 0;
-        let totalCashValue = 0;
+        let totalPolicyCashValueOnly = 0; // 只計算保單現金價值（嚴格不含MPF）
+        let totalMpfValueOnly = 0;        // 專門計算MPF結餘
         let policyCount = 0;
 
         const policyItems = document.querySelectorAll('#insPoliciesContainer .policy-item');
@@ -1310,17 +1374,21 @@
                 policyCount++;
                 totalAnnualPremium += annualPremium;
                 totalMonthlyEquivalent += monthlyPremium;
-                totalCashValue += cashValue;
 
-                if (typeVal === 'life') totalExistingLife += sumInsured;
-                else if (typeVal === 'ci') totalExistingCI += sumInsured;
-                else if (typeVal === 'accident') totalExistingAccident += sumInsured;
-                else if (typeVal === 'savings') {
-                    totalExistingLife += sumInsured;
-                    totalExistingRetirement += cashValue;
-                }
-                else if (typeVal === 'mpf') {
-                    totalExistingRetirement += cashValue || sumInsured;
+                // 核心修復：嚴格分開保單現金價值與 MPF 結餘
+                if (typeVal === 'mpf') {
+                    const mpfBalance = cashValue || sumInsured;
+                    totalExistingRetirement += mpfBalance;
+                    totalMpfValueOnly += mpfBalance;
+                } else {
+                    totalPolicyCashValueOnly += cashValue;
+                    if (typeVal === 'life') totalExistingLife += sumInsured;
+                    else if (typeVal === 'ci') totalExistingCI += sumInsured;
+                    else if (typeVal === 'accident') totalExistingAccident += sumInsured;
+                    else if (typeVal === 'savings') {
+                        totalExistingLife += sumInsured;
+                        totalExistingRetirement += cashValue;
+                    }
                 }
 
                 const displayCompany = company || '未命名機構';
@@ -1347,6 +1415,8 @@
             listContainer.innerHTML = '<span class="text-stone-400">尚未新增任何保單或 MPF</span>';
         }
 
+        const totalCombinedValue = totalPolicyCashValueOnly + totalMpfValueOnly;
+
         const lifeGap = Math.max(0, targetLife - totalExistingLife);
         const ciGap = Math.max(0, targetCI - totalExistingCI);
         const accidentGap = Math.max(0, targetAccident - totalExistingAccident);
@@ -1356,7 +1426,10 @@
         document.getElementById('insDispPolicyCount').innerText = policyCount;
         document.getElementById('insDispMonthlyPremium').innerText = formatCurrency(Math.round(totalMonthlyEquivalent));
         document.getElementById('insDispAnnualPremium').innerText = formatCurrency(totalAnnualPremium);
-        document.getElementById('insDispTotalCashValue').innerText = formatCurrency(totalCashValue);
+        
+        document.getElementById('insDispCashValue').innerText = formatCurrency(totalPolicyCashValueOnly);
+        document.getElementById('insDispMpfValue').innerText = formatCurrency(totalMpfValueOnly);
+        document.getElementById('insDispTotalCashValue').innerText = formatCurrency(totalCombinedValue);
 
         document.getElementById('insLifeGapText').innerText = formatCurrency(lifeGap);
         document.getElementById('insCiGapText').innerText = formatCurrency(ciGap);
@@ -1428,11 +1501,15 @@
     function copyInsuranceWhatsAppReport() {
         calculateInsuranceSummary();
 
-        const name = document.getElementById('insClientName').value.trim() || '未填寫';
+        const nameInput = document.getElementById('insClientName').value.trim();
+        const clientNameStr = nameInput ? nameInput : '尊貴客戶';
         const gender = document.getElementById('insClientGender').value;
+
         const policyCount = document.getElementById('insDispPolicyCount').innerText;
         const monthlyPremium = document.getElementById('insDispMonthlyPremium').innerText;
         const annualPremium = document.getElementById('insDispAnnualPremium').innerText;
+        const cashValueTotal = document.getElementById('insDispCashValue').innerText;
+        const mpfValueTotal = document.getElementById('insDispMpfValue').innerText;
         const totalCash = document.getElementById('insDispTotalCashValue').innerText;
         
         const lifeGap = document.getElementById('insLifeGapText').innerText;
@@ -1450,24 +1527,34 @@
             const freq = item.querySelector('.policy-freq').value === 'month' ? '月供' : '年供';
 
             if (comp || sum || cash || prem) {
-                policiesText += `  ${index + 1}. [${comp || '其他'}] ${type} - 金額: HK$${Number(sum || cash || 0).toLocaleString()} (${freq}: $${Number(prem || 0).toLocaleString()})\n`;
+                policiesText += `  🔹 ${index + 1}. [${comp || '其他機構'}] ${type}\n     └ 金額: HK$${Number(sum || cash || 0).toLocaleString()} (${freq}: $${Number(prem || 0).toLocaleString()})\n`;
             }
         });
 
-        const reportText = `🛡️ *保障與資產配置分析報告*\n` +
-                           `━━━━━━━━━━━━━━━\n` +
-                           `👤 客戶：${name} (性別：${gender} | 年齡：${insCalculatedAge}歲)\n` +
-                           `📋 現有保單/MPF數：${policyCount} 份\n` +
-                           (policiesText ? `\n📌 *明細摘要：*\n${policiesText}\n` : '') +
-                           `💰 供款支出：${monthlyPremium} (年繳總額: ${annualPremium})\n` +
-                           `💎 現金價值/MPF總額：${totalCash}\n\n` +
-                           `📊 *保障缺口狀況*\n` +
+        /* 匯出/複製的報告內容乾淨專業，絕不包含任何項目選擇按鈕或選項文字 */
+        const reportText = `📊 *【專業保險與資產配置分析報告】*\n` +
+                           `━━━━━━━━━━━━━━━━━━\n` +
+                           `👤 *客戶檔案*\n` +
+                           `• 姓名：${clientNameStr}\n` +
+                           `• 性別：${gender}\n` +
+                           `• 年齡：${insCalculatedAge} 歲\n\n` +
+                           `📋 *現有保單與強積金概況*\n` +
+                           `• 有效保單/MPF數量：${policyCount} 份\n` +
+                           (policiesText ? `\n📌 *保單與資產明細：*\n${policiesText}\n` : '') +
+                           `💰 *財務供款支出*\n` +
+                           `• 每月平均支出：${monthlyPremium}\n` +
+                           `• 每年總繳保費：${annualPremium}\n\n` +
+                           `💎 *資產結餘總覽*\n` +
+                           `• 保單現金價值總額：${cashValueTotal}\n` +
+                           `• MPF 強積金結餘總額：${mpfValueTotal}\n` +
+                           `✨ *總資產淨值結餘：${totalCash}*\n\n` +
+                           `⚖️ *保障缺口分析報告*\n` +
                            `• 人壽保障缺口：${lifeGap}\n` +
                            `• 危疾保障缺口：${ciGap}\n` +
                            `• 意外保障缺口：${accidentGap}\n` +
-                           `• 退休金缺口：${retirementGap}\n` +
-                           `━━━━━━━━━━━━━━━\n` +
-                           `✨ 專業理財規劃，為您築起安心防線。`;
+                           `• 退休金儲蓄缺口：${retirementGap}\n` +
+                           `━━━━━━━━━━━━━━━━━━\n` +
+                           `💡 *專業建議：* 透過全方位風險評估與資產配置，為您與家人建構穩健的財務防線。`;
 
         navigator.clipboard.writeText(reportText).then(() => {
             const toast = document.getElementById('toast');
@@ -1477,6 +1564,112 @@
             }, 2500);
         });
     }
+
+    // ==========================================
+    // Vue 3 儲蓄保險回報與 IRR 比較系統初始化 (精準 IRR 演算法)
+    // ==========================================
+    const { createApp, ref, computed } = Vue;
+    createApp({
+        setup() {
+            const currency = ref('HKD');
+            const currencySymbol = computed(() => currency.value === 'USD' ? 'US$' : '$');
+
+            const comparisonPlans = ref([
+                { id: 1, name: '計劃 A', annualPremium: '', payYears: 5, targetYear: 10, surrenderValue: '' },
+                { id: 2, name: '計劃 B', annualPremium: '', payYears: 5, targetYear: 10, surrenderValue: '' }
+            ]);
+
+            const addPlan = () => {
+                comparisonPlans.value.push({
+                    id: Date.now(),
+                    name: `計劃 ${String.fromCharCode(64 + comparisonPlans.value.length + 1)}`,
+                    annualPremium: '',
+                    payYears: 5,
+                    targetYear: 10,
+                    surrenderValue: ''
+                });
+            };
+
+            const removePlan = (id) => {
+                comparisonPlans.value = comparisonPlans.value.filter(p => p.id !== id);
+            };
+
+            const clearAllPlans = () => {
+                comparisonPlans.value = [];
+            };
+
+            const calculatePaid = (plan) => {
+                const years = Math.min(Number(plan.payYears) || 0, Number(plan.targetYear) || 0);
+                return (Number(plan.annualPremium) || 0) * years;
+            };
+
+            const calculateProfit = (plan) => {
+                return (Number(plan.surrenderValue) || 0) - calculatePaid(plan);
+            };
+
+            const calculateIRR = (plan) => {
+                const annualPremium = Number(plan.annualPremium) || 0;
+                const payYears = Number(plan.payYears) || 0;
+                const targetYear = Number(plan.targetYear) || 0;
+                const fv = Number(plan.surrenderValue) || 0;
+
+                if (annualPremium <= 0 || payYears <= 0 || targetYear <= 0 || fv <= 0) return '0.00';
+
+                let r = 0.05;
+                for (let i = 0; i < 100; i++) {
+                    let npv = 0;
+                    let dnpv = 0;
+
+                    const effectivePayYears = Math.min(payYears, targetYear);
+                    for (let t = 0; t < effectivePayYears; t++) {
+                        const cf = -annualPremium;
+                        const denom = Math.pow(1 + r, t);
+                        npv += cf / denom;
+                        if (t > 0) {
+                            dnpv += -t * cf / (denom * (1 + r));
+                        }
+                    }
+
+                    const denomIn = Math.pow(1 + r, targetYear);
+                    npv += fv / denomIn;
+                    dnpv += -targetYear * fv / (denomIn * (1 + r));
+
+                    if (Math.abs(npv) < 1e-7) break;
+                    if (dnpv === 0) break;
+
+                    const nextR = r - npv / dnpv;
+                    if (isNaN(nextR) || !isFinite(nextR)) break;
+                    r = nextR;
+                }
+
+                return (r * 100).toFixed(2);
+            };
+
+            const bestPlanId = computed(() => {
+                if (comparisonPlans.value.length === 0) return null;
+                let validPlans = comparisonPlans.value.filter(p => Number(calculateIRR(p)) > 0);
+                if (validPlans.length === 0) return null;
+
+                let best = validPlans[0];
+                let maxIrr = Number(calculateIRR(best));
+                
+                for (let i = 1; i < validPlans.length; i++) {
+                    const currentIrr = Number(calculateIRR(validPlans[i]));
+                    if (currentIrr > maxIrr) {
+                        maxIrr = currentIrr;
+                        best = validPlans[i];
+                    }
+                }
+                return best.id;
+            });
+
+            return {
+                currency, currencySymbol, comparisonPlans,
+                addPlan, removePlan, clearAllPlans,
+                calculatePaid, calculateProfit, calculateIRR, bestPlanId
+            };
+        }
+    }).mount('#irrApp');
 </script>
 
 </body>
