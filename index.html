@@ -422,7 +422,7 @@
 
         .badge-standard { background: #e8ede4; color: #386641; padding: 3px 8px; border-radius: 3px; font-size: 11px; }
         .badge-flexi { background: #e2ecf2; color: #3d5a80; padding: 3px 8px; border-radius: 3px; font-size: 11px; }
-        .badge-high-end { background: #fdf0ed; color: #bc4749; padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: 500; }
+        .badge-high-end { background: #fdf0ed; color: #bc4749; font-weight: 500; padding: 3px 8px; border-radius: 3px; font-size: 11px; }
 
         .status-badge {
             padding: 3px 10px;
@@ -897,8 +897,8 @@
             <div id="retirementFlowSection" class="card hidden-section">
                 <div id="retireApp">
                     <div class="mb-6 border-b pb-4">
-                        <h2 class="text-xl font-bold text-slate-900">🏖️ 退休現金流與逆向按揭（安老按揭）模擬器</h2>
-                        <p class="text-xs text-slate-500">評估退休後每月資金消耗、資產壽命及透過物業逆向按揭補充現金流之效益</p>
+                        <h2 class="text-xl font-bold text-slate-900">🏖️ 退休現金流與雙重逆向按揭（物業 + 保單）模擬器</h2>
+                        <p class="text-xs text-slate-500">評估退休後每月資金消耗、資產壽命及透過物業與人壽保單逆向按揭補充現金流之效益</p>
                     </div>
 
                     <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
@@ -927,8 +927,20 @@
                                 <input v-model.number="monthlyExpense" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：25000">
                             </div>
                             <div>
-                                <label class="block font-medium text-slate-600 mb-1">物業估值 (如考慮逆向按揭，HKD)</label>
+                                <label class="block font-medium text-slate-600 mb-1">提取年金 (每月，HKD)</label>
+                                <input v-model.number="monthlyAnnuity" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：5000">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">其他收入 (每月，HKD)</label>
+                                <input v-model.number="monthlyOtherIncome" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：3000">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">物業估值 (如考慮物業逆按，HKD)</label>
                                 <input v-model.number="propertyValue" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：6000000">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">人壽保單身故賠償總額 (如考慮保單逆按，HKD)</label>
+                                <input v-model.number="policyBenefitValue" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：2000000">
                             </div>
                         </div>
 
@@ -939,8 +951,24 @@
 
                                 <div class="bg-[#f9f8f6] p-4 rounded-xl border border-stone-200 space-y-2 text-xs">
                                     <p class="text-slate-600">退休總年期：<span class="font-bold text-slate-900">{{ totalRetireYears }} 年</span> (由 {{ retireAge }} 歲至 {{ deathAge }} 歲)</p>
-                                    <p class="text-slate-600">退休期間總需求支出：<span class="font-bold text-slate-900">HK$ {{ totalNeedExpense.toLocaleString() }}</span></p>
-                                    <p class="text-slate-600">現有資產能否支撐？ 
+                                    
+                                    <p class="text-slate-600">每月淨現金流（開支 - 年金 - 其他收入 - 物業逆按 - 保單逆按）：
+                                        <span class="font-bold text-slate-800">HK$ {{ netMonthlyExpense.toLocaleString() }} / 月</span>
+                                        <span class="text-slate-400 text-[11px] block mt-0.5">
+                                            (開支 ${{ (Number(monthlyExpense) || 0).toLocaleString() }} - 年金 ${{ (Number(monthlyAnnuity) || 0).toLocaleString() }} - 其他收入 ${{ (Number(monthlyOtherIncome) || 0).toLocaleString() }} - 物業逆按 ${{ estimatedReverseMortgageMonthly.toLocaleString() }} - 保單逆按 ${{ estimatedPolicyReverseMonthly.toLocaleString() }})
+                                        </span>
+                                    </p>
+
+                                    <p class="text-slate-600">退休期間總淨需求支出（計及雙重逆按）：<span class="font-bold text-slate-900">HK$ {{ totalNetNeedExpense.toLocaleString() }}</span></p>
+                                    
+                                    <!-- 退休需要資產淨值項目 -->
+                                    <p class="text-slate-600 pt-1 border-t border-stone-200/60">
+                                        🎯 <strong>退休需要資產淨值（總淨需求支出）</strong>：
+                                        <span class="font-bold text-blue-700 text-sm">HK$ {{ totalNetNeedExpense.toLocaleString() }}</span>
+                                        <span class="text-slate-400 text-[11px] block mt-0.5">(已自動計入物業與保單逆向按揭年金收入幫手分擔開支後的淨資金需求)</span>
+                                    </p>
+
+                                    <p class="text-slate-600 pt-1">現有資產能否支撐？ 
                                         <span class="font-bold px-2 py-0.5 rounded text-white" :class="isAssetEnough ? 'bg-emerald-600' : 'bg-rose-500'">
                                             {{ isAssetEnough ? '資產充足' : '出現資金耗盡缺口！' }}
                                         </span>
@@ -950,19 +978,19 @@
                                     </p>
                                 </div>
 
-                                <!-- 逆向按揭（安老按揭）建議與計算方法註解 -->
+                                <!-- 逆向按揭（安老按揭 + 保單逆按）建議與計算方法註解 -->
                                 <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-100 text-xs space-y-2">
-                                    <h4 class="font-bold text-blue-900">🏠 逆向按揭（安老按揭計劃）補充方案</h4>
-                                    <p class="text-slate-600">若物業估值為 HK$ {{ Number(propertyValue).toLocaleString() }}，按安老按揭標準估算，大約可每月提取年金約：</p>
-                                    <p class="text-base font-bold text-blue-700">約 HK$ {{ estimatedReverseMortgageMonthly.toLocaleString() }} / 月 (固定年期)</p>
-                                    <p class="text-[11px] text-slate-500">透過安老按揭，可有效填補退休後期的現金流缺口，實現「有樓有現金」的安穩晚年。</p>
+                                    <h4 class="font-bold text-blue-900">🏠 雙重逆向按揭（安老按揭 + 保單逆按計劃）補充方案</h4>
+                                    <p class="text-slate-600">1. <b>物業逆按估算</b> (估值 HK$ {{ Number(propertyValue).toLocaleString() }})：約 <span class="font-bold text-blue-700">HK$ {{ estimatedReverseMortgageMonthly.toLocaleString() }} / 月</span></p>
+                                    <p class="text-slate-600">2. <b>保單逆按估算</b> (身故賠償 HK$ {{ Number(policyBenefitValue).toLocaleString() }})：約 <span class="font-bold text-blue-700">HK$ {{ estimatedPolicyReverseMonthly.toLocaleString() }} / 月</span> (按 15 年期估算)</p>
+                                    <p class="text-[11px] text-slate-500">結合物業與人壽保單雙重逆按，全面解鎖非流動資產，達至最大化現金流效益。</p>
 
-                                    <!-- 新增：計算方法註解區塊 -->
+                                    <!-- 計算方法註解區塊 -->
                                     <div class="mt-3 pt-2 border-t border-blue-200/60 text-[10px] text-blue-900/80 space-y-1 bg-blue-100/40 p-2.5 rounded-lg">
-                                        <p class="font-bold text-blue-950">ℹ️ 逆向按揭（安老按揭）估算方法註解：</p>
-                                        <p>1. <b>提取總池基準</b>：以物業估值的 30% 作為基準可提取年金總額估算。</p>
-                                        <p>2. <b>年金分攤方式</b>：按 15 年（180 個月）固定年期平均分攤計算每月所得年金。</p>
-                                        <p>3. <b>實際批核差異</b>：實際批核金額需視乎借款人年齡、物業樓齡、按契條款及香港按證保險公司（HKMC）之最終審批為準。</p>
+                                        <p class="font-bold text-blue-950">ℹ️ 逆向按揭估算方法註解：</p>
+                                        <p>1. <b>物業逆按</b>：以物業估值的 30% 作提取總池，按 15 年（180個月）平均分攤。</p>
+                                        <p>2. <b>保單逆按</b>：以身故賠償額的 50%（約數）作為可用貸款基準，按 15 年固定年期平均分攤。</p>
+                                        <p>3. <b>實際審批</b>：實際批核金額需根據香港按證保險公司（HKMC）之官方年金表及最終批核為準。</p>
                                     </div>
                                 </div>
                             </div>
@@ -1763,29 +1791,52 @@
             const deathAge = ref(85);
             const liquidAssets = ref(2000000);
             const monthlyExpense = ref(25000);
+            const monthlyAnnuity = ref(0);
+            const monthlyOtherIncome = ref(0);
             const propertyValue = ref(6000000);
+            const policyBenefitValue = ref(2000000);
 
             const totalRetireYears = computed(() => Math.max(0, deathAge.value - retireAge.value));
-            const totalNeedExpense = computed(() => monthlyExpense.value * 12 * totalRetireYears.value);
-            const isAssetEnough = computed(() => liquidAssets.value >= totalNeedExpense.value);
-
-            const exhaustionAge = computed(() => {
-                if (isAssetEnough.value) return null;
-                const annualNeed = monthlyExpense.value * 12;
-                if (annualNeed <= 0) return retireAge.value;
-                const yearsCanLast = liquidAssets.value / annualNeed;
-                return Math.round(retireAge.value + yearsCanLast);
-            });
-
+            
+            // 估算物業逆向按揭每月年金 (以估值 30% 作為提取池，分 15 年 / 180個月)
             const estimatedReverseMortgageMonthly = computed(() => {
                 if (propertyValue.value <= 0) return 0;
                 const usablePool = propertyValue.value * 0.30;
                 return Math.round(usablePool / 180);
             });
 
+            // 估算保單逆向按揭每月年金 (以身故賠償額 50% 作可用貸款基準，分 15 年 / 180個月)
+            const estimatedPolicyReverseMonthly = computed(() => {
+                if (policyBenefitValue.value <= 0) return 0;
+                const policyPool = policyBenefitValue.value * 0.50;
+                return Math.round(policyPool / 180);
+            });
+            
+            // 計算扣除年金、其他收入及雙重逆按後的每月淨開支
+            const netMonthlyExpense = computed(() => {
+                const expense = Number(monthlyExpense.value) || 0;
+                const annuity = Number(monthlyAnnuity.value) || 0;
+                const other = Number(monthlyOtherIncome.value) || 0;
+                const revMortgage = estimatedReverseMortgageMonthly.value;
+                const policyRev = estimatedPolicyReverseMonthly.value;
+                return Math.max(0, expense - annuity - other - revMortgage - policyRev);
+            });
+
+            const totalNetNeedExpense = computed(() => netMonthlyExpense.value * 12 * totalRetireYears.value);
+
+            const isAssetEnough = computed(() => (Number(liquidAssets.value) || 0) >= totalNetNeedExpense.value);
+
+            const exhaustionAge = computed(() => {
+                if (isAssetEnough.value) return null;
+                const annualNetNeed = netMonthlyExpense.value * 12;
+                if (annualNetNeed <= 0) return retireAge.value;
+                const yearsCanLast = (Number(liquidAssets.value) || 0) / annualNetNeed;
+                return Math.round(retireAge.value + yearsCanLast);
+            });
+
             return {
-                currentAge, retireAge, deathAge, liquidAssets, monthlyExpense, propertyValue,
-                totalRetireYears, totalNeedExpense, isAssetEnough, exhaustionAge, estimatedReverseMortgageMonthly
+                currentAge, retireAge, deathAge, liquidAssets, monthlyExpense, monthlyAnnuity, monthlyOtherIncome, propertyValue, policyBenefitValue,
+                totalRetireYears, estimatedReverseMortgageMonthly, estimatedPolicyReverseMonthly, netMonthlyExpense, totalNetNeedExpense, isAssetEnough, exhaustionAge
             };
         }
     }).mount('#retireApp');
