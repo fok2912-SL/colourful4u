@@ -212,8 +212,8 @@
 
         .radio-group {
             display: inline-flex;
-            gap: 15px;
-            font-size: 14px;
+            gap: 10px;
+            font-size: 13px;
             cursor: pointer;
             flex-wrap: wrap;
             justify-content: center;
@@ -223,8 +223,8 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 12px;
+            gap: 5px;
+            padding: 6px 10px;
             border-radius: 20px;
             transition: all 0.3s ease;
             border: 1px solid transparent;
@@ -458,7 +458,6 @@
             display: none;
         }
 
-        /* 專門設定列印與匯出 PDF 時的版面乾淨度 */
         @media print {
             body {
                 background-color: #ffffff !important;
@@ -469,7 +468,6 @@
             .print-only {
                 display: block !important;
             }
-            /* 列印時強制隱藏頂部選單及項目選擇卡片 */
             .mode-selector-card {
                 display: none !important;
             }
@@ -535,7 +533,10 @@
                         <input type="radio" name="viewMode" value="insuranceAnalysis" onchange="switchMode()"> 保險與資產配置分析
                     </label>
                     <label>
-                        <input type="radio" name="viewMode" value="irrCalculator" onchange="switchMode()"> 儲蓄保險回報與 IRR 比較
+                        <input type="radio" name="viewMode" value="irrCalculator" onchange="switchMode()"> 儲蓄保險 IRR 比較
+                    </label>
+                    <label>
+                        <input type="radio" name="viewMode" value="retirementFlow" onchange="switchMode()"> 退休現金流與逆向按揭
                     </label>
                 </div>
             </div>
@@ -559,7 +560,7 @@
                 </table>
             </div>
 
-            <!-- 自願醫保保費查詢與三間公司卡片列表對比模組 -->
+            <!-- 自願醫保保費查詢模組 -->
             <div id="vhisSection" class="card hidden-section">
                 <h2 class="section-title">自願醫保 (VHIS) 保費查詢與多公司對比</h2>
                 <div class="form-row">
@@ -617,11 +618,9 @@
 
             <!-- 保險與資產配置分析模組 -->
             <div id="insuranceAnalysisSection" class="card hidden-section">
-                <!-- 專為列印/PDF準備的專業標題 -->
                 <div id="printReportTitle" class="print-report-title">專業保險與資產配置分析報告</div>
 
                 <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <!-- 左側：輸入表單 -->
                     <div class="lg:col-span-7 bg-[#fffefc] rounded-xl shadow-sm border border-stone-200 p-6 space-y-6 no-print">
                         <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
                             <span class="w-2 h-2 rounded-full bg-stone-700"></span>
@@ -749,7 +748,6 @@
                         </button>
                     </div>
 
-                    <!-- 右側：總結與分析報告 -->
                     <div class="lg:col-span-5 bg-[#fffefc] rounded-xl shadow-sm border border-stone-200 p-6 flex flex-col justify-between space-y-6">
                         <div class="space-y-4">
                             <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
@@ -889,6 +887,88 @@
                                         <p class="text-xs font-bold text-blue-600 mt-0.5">{{ calculateIRR(plan) }} %</p>
                                     </div>
                                 </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 5. 退休現金流與逆向按揭模擬器模組 (含計算方法註解) -->
+            <div id="retirementFlowSection" class="card hidden-section">
+                <div id="retireApp">
+                    <div class="mb-6 border-b pb-4">
+                        <h2 class="text-xl font-bold text-slate-900">🏖️ 退休現金流與逆向按揭（安老按揭）模擬器</h2>
+                        <p class="text-xs text-slate-500">評估退休後每月資金消耗、資產壽命及透過物業逆向按揭補充現金流之效益</p>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                        <!-- 輸入面板 -->
+                        <div class="lg:col-span-5 bg-[#fcfaf7] p-6 rounded-xl border border-stone-200 space-y-4 text-xs">
+                            <h3 class="font-bold text-sm text-slate-800 border-b pb-2">參數輸入</h3>
+                            
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">現時年齡 (歲)</label>
+                                <input v-model.number="currentAge" type="number" class="w-full border rounded p-2 bg-white">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">預期退休年齡 (歲)</label>
+                                <input v-model.number="retireAge" type="number" class="w-full border rounded p-2 bg-white">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">預期生活至 (歲)</label>
+                                <input v-model.number="deathAge" type="number" class="w-full border rounded p-2 bg-white">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">現有退休資產總值 (HKD)</label>
+                                <input v-model.number="liquidAssets" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：2000000">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">退休後每月期望開支 (HKD)</label>
+                                <input v-model.number="monthlyExpense" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：25000">
+                            </div>
+                            <div>
+                                <label class="block font-medium text-slate-600 mb-1">物業估值 (如考慮逆向按揭，HKD)</label>
+                                <input v-model.number="propertyValue" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：6000000">
+                            </div>
+                        </div>
+
+                        <!-- 結果分析面板 -->
+                        <div class="lg:col-span-7 bg-white p-6 rounded-xl border border-stone-200 flex flex-col justify-between space-y-6">
+                            <div class="space-y-4">
+                                <h3 class="font-bold text-sm text-slate-800 border-b pb-2">退休現金流與缺口分析</h3>
+
+                                <div class="bg-[#f9f8f6] p-4 rounded-xl border border-stone-200 space-y-2 text-xs">
+                                    <p class="text-slate-600">退休總年期：<span class="font-bold text-slate-900">{{ totalRetireYears }} 年</span> (由 {{ retireAge }} 歲至 {{ deathAge }} 歲)</p>
+                                    <p class="text-slate-600">退休期間總需求支出：<span class="font-bold text-slate-900">HK$ {{ totalNeedExpense.toLocaleString() }}</span></p>
+                                    <p class="text-slate-600">現有資產能否支撐？ 
+                                        <span class="font-bold px-2 py-0.5 rounded text-white" :class="isAssetEnough ? 'bg-emerald-600' : 'bg-rose-500'">
+                                            {{ isAssetEnough ? '資產充足' : '出現資金耗盡缺口！' }}
+                                        </span>
+                                    </p>
+                                    <p v-if="!isAssetEnough" class="text-rose-600 font-semibold pt-1">
+                                        ⚠️ 預計資產將於約 <span class="underline">{{ exhaustionAge }} 歲</span>時耗盡！
+                                    </p>
+                                </div>
+
+                                <!-- 逆向按揭（安老按揭）建議與計算方法註解 -->
+                                <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-100 text-xs space-y-2">
+                                    <h4 class="font-bold text-blue-900">🏠 逆向按揭（安老按揭計劃）補充方案</h4>
+                                    <p class="text-slate-600">若物業估值為 HK$ {{ Number(propertyValue).toLocaleString() }}，按安老按揭標準估算，大約可每月提取年金約：</p>
+                                    <p class="text-base font-bold text-blue-700">約 HK$ {{ estimatedReverseMortgageMonthly.toLocaleString() }} / 月 (固定年期)</p>
+                                    <p class="text-[11px] text-slate-500">透過安老按揭，可有效填補退休後期的現金流缺口，實現「有樓有現金」的安穩晚年。</p>
+
+                                    <!-- 新增：計算方法註解區塊 -->
+                                    <div class="mt-3 pt-2 border-t border-blue-200/60 text-[10px] text-blue-900/80 space-y-1 bg-blue-100/40 p-2.5 rounded-lg">
+                                        <p class="font-bold text-blue-950">ℹ️ 逆向按揭（安老按揭）估算方法註解：</p>
+                                        <p>1. <b>提取總池基準</b>：以物業估值的 30% 作為基準可提取年金總額估算。</p>
+                                        <p>2. <b>年金分攤方式</b>：按 15 年（180 個月）固定年期平均分攤計算每月所得年金。</p>
+                                        <p>3. <b>實際批核差異</b>：實際批核金額需視乎借款人年齡、物業樓齡、按契條款及香港按證保險公司（HKMC）之最終審批為準。</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="text-right text-[11px] text-slate-400">
+                                * 註：計算未計及通脹率及投資回報率，僅作初步現金流壓力測試參考。
                             </div>
                         </div>
                     </div>
@@ -1092,6 +1172,7 @@
         document.getElementById('vhisSection').classList.add('hidden-section');
         document.getElementById('insuranceAnalysisSection').classList.add('hidden-section');
         document.getElementById('irrCalculatorSection').classList.add('hidden-section');
+        document.getElementById('retirementFlowSection').classList.add('hidden-section');
 
         if (mode === 'er') document.getElementById('erSection').classList.remove('hidden-section');
         else if (mode === 'vhis') document.getElementById('vhisSection').classList.remove('hidden-section');
@@ -1101,6 +1182,9 @@
         }
         else if (mode === 'irrCalculator') {
             document.getElementById('irrCalculatorSection').classList.remove('hidden-section');
+        }
+        else if (mode === 'retirementFlow') {
+            document.getElementById('retirementFlowSection').classList.remove('hidden-section');
         }
     }
 
@@ -1335,8 +1419,8 @@
         let totalExistingRetirement = 0;
         let totalAnnualPremium = 0;
         let totalMonthlyEquivalent = 0;
-        let totalPolicyCashValueOnly = 0; // 只計算保單現金價值（嚴格不含MPF）
-        let totalMpfValueOnly = 0;        // 專門計算MPF結餘
+        let totalPolicyCashValueOnly = 0; 
+        let totalMpfValueOnly = 0;        
         let policyCount = 0;
 
         const policyItems = document.querySelectorAll('#insPoliciesContainer .policy-item');
@@ -1375,7 +1459,6 @@
                 totalAnnualPremium += annualPremium;
                 totalMonthlyEquivalent += monthlyPremium;
 
-                // 核心修復：嚴格分開保單現金價值與 MPF 結餘
                 if (typeVal === 'mpf') {
                     const mpfBalance = cashValue || sumInsured;
                     totalExistingRetirement += mpfBalance;
@@ -1531,7 +1614,6 @@
             }
         });
 
-        /* 匯出/複製的報告內容乾淨專業，絕不包含任何項目選擇按鈕或選項文字 */
         const reportText = `📊 *【專業保險與資產配置分析報告】*\n` +
                            `━━━━━━━━━━━━━━━━━━\n` +
                            `👤 *客戶檔案*\n` +
@@ -1566,7 +1648,7 @@
     }
 
     // ==========================================
-    // Vue 3 儲蓄保險回報與 IRR 比較系統初始化 (精準 IRR 演算法)
+    // Vue 3 儲蓄保險 IRR 比較系統初始化
     // ==========================================
     const { createApp, ref, computed } = Vue;
     createApp({
@@ -1670,6 +1752,43 @@
             };
         }
     }).mount('#irrApp');
+
+    // ==========================================
+    // 6. 退休現金流與逆向按揭模擬器 Vue 初始化
+    // ==========================================
+    createApp({
+        setup() {
+            const currentAge = ref(45);
+            const retireAge = ref(65);
+            const deathAge = ref(85);
+            const liquidAssets = ref(2000000);
+            const monthlyExpense = ref(25000);
+            const propertyValue = ref(6000000);
+
+            const totalRetireYears = computed(() => Math.max(0, deathAge.value - retireAge.value));
+            const totalNeedExpense = computed(() => monthlyExpense.value * 12 * totalRetireYears.value);
+            const isAssetEnough = computed(() => liquidAssets.value >= totalNeedExpense.value);
+
+            const exhaustionAge = computed(() => {
+                if (isAssetEnough.value) return null;
+                const annualNeed = monthlyExpense.value * 12;
+                if (annualNeed <= 0) return retireAge.value;
+                const yearsCanLast = liquidAssets.value / annualNeed;
+                return Math.round(retireAge.value + yearsCanLast);
+            });
+
+            const estimatedReverseMortgageMonthly = computed(() => {
+                if (propertyValue.value <= 0) return 0;
+                const usablePool = propertyValue.value * 0.30;
+                return Math.round(usablePool / 180);
+            });
+
+            return {
+                currentAge, retireAge, deathAge, liquidAssets, monthlyExpense, propertyValue,
+                totalRetireYears, totalNeedExpense, isAssetEnough, exhaustionAge, estimatedReverseMortgageMonthly
+            };
+        }
+    }).mount('#retireApp');
 </script>
 
 </body>
