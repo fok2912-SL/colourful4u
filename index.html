@@ -11,7 +11,9 @@
     <!-- Vue 3 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/vue@3/dist/vue.global.js"></script>
     <!-- Google Fonts: 日式極簡明體與黑體 -->
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;600&family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-color: #fcfaf7;
@@ -193,9 +195,9 @@
 
         .mode-selector-card {
             background-color: var(--card-bg);
-            border-radius: 4px;
+            border-radius: 6px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            padding: 20px;
+            padding: 24px;
             margin-bottom: 30px;
             border: 1px solid var(--border-color);
             text-align: center;
@@ -203,7 +205,7 @@
 
         .mode-selector-card h3 {
             margin-top: 0;
-            font-size: 14px;
+            font-size: 13px;
             color: var(--sub-text);
             letter-spacing: 1.5px;
             margin-bottom: 15px;
@@ -212,7 +214,7 @@
 
         .radio-group {
             display: inline-flex;
-            gap: 10px;
+            gap: 12px;
             font-size: 13px;
             cursor: pointer;
             flex-wrap: wrap;
@@ -223,15 +225,45 @@
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 5px;
-            padding: 6px 10px;
+            gap: 6px;
+            padding: 6px 14px;
             border-radius: 20px;
             transition: all 0.3s ease;
             border: 1px solid transparent;
+            background-color: #faf8f5;
         }
 
         .radio-group label:hover {
-            background-color: #f4f1ea;
+            background-color: #f2ece4;
+        }
+
+        /* 下拉細分選單樣式 */
+        .sub-menu-container {
+            background: #f7f4ee;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            padding: 12px 20px;
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+        .sub-menu-container label {
+            margin-bottom: 0;
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-color);
+            background: #fff;
+            padding: 6px 14px;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
+        }
+        .sub-menu-container label:hover {
+            border-color: var(--primary-accent);
+            color: var(--primary-accent);
         }
 
         .card {
@@ -253,6 +285,7 @@
         .form-group {
             flex: 1;
             min-width: 220px;
+            margin-bottom: 18px;
         }
 
         label {
@@ -270,7 +303,7 @@
             border: 1px solid var(--border-color);
             border-radius: 4px;
             box-sizing: border-box;
-            font-size: 15px;
+            font-size: 14px;
             background-color: #fff;
             color: var(--text-color);
             outline: none;
@@ -281,10 +314,21 @@
             border-color: var(--primary-accent);
         }
 
-        textarea {
-            resize: vertical;
-            min-height: 120px;
+        .input-wrapper { position: relative; }
+        .input-wrapper span {
+            position: absolute;
+            left: 12px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 14px;
+            color: var(--sub-text);
+            font-weight: 500;
         }
+        .input-with-symbol {
+            padding-left: 32px !important;
+        }
+
+        .helper-text { font-size: 11px; color: var(--sub-text); margin-top: 5px; }
 
         .checkbox-container {
             border: 1px solid var(--border-color);
@@ -422,7 +466,7 @@
 
         .badge-standard { background: #e8ede4; color: #386641; padding: 3px 8px; border-radius: 3px; font-size: 11px; }
         .badge-flexi { background: #e2ecf2; color: #3d5a80; padding: 3px 8px; border-radius: 3px; font-size: 11px; }
-        .badge-high-end { background: #fdf0ed; color: #bc4749; font-weight: 500; padding: 3px 8px; border-radius: 3px; font-size: 11px; }
+        .badge-high-end { background: #fdf0ed; color: #bc4749; padding: 3px 8px; border-radius: 3px; font-size: 11px; font-weight: 500; }
 
         .status-badge {
             padding: 3px 10px;
@@ -433,6 +477,7 @@
         .status-short { background: #e8ede4; color: #386641; }
         .status-medium { background: #fef3e2; color: #b78428; }
         .status-long { background: #fdf0ed; color: #bc4749; }
+        .status-info { background: #e9ecef; color: #495057; }
 
         .section-title {
             color: var(--text-color);
@@ -443,37 +488,89 @@
             font-size: 18px;
             font-weight: 400;
             letter-spacing: 1px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .refresh-btn {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            padding: 4px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            cursor: pointer;
+            color: var(--sub-text);
+            transition: all 0.2s;
+        }
+        .refresh-btn:hover {
+            color: var(--text-color);
+            border-color: var(--text-color);
         }
 
         .refresh-info {
             font-size: 12px;
             color: var(--sub-text);
-            float: right;
-            margin-top: 3px;
         }
 
         .hidden-section { display: none; }
+
+        /* 扣稅模組樣式 */
+        .tax-table-container { margin: 18px 0; border-radius: 6px; overflow: hidden; border: 1px solid var(--border-color); }
+        .tax-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .tax-table th, .tax-table td { padding: 12px 14px; border-bottom: 1px solid var(--border-color); }
+        .tax-table th { background: #f7f4ee; color: var(--text-color); font-weight: 500; }
+        .tax-table .row-highlight { background: #fcf4f2; font-weight: 600; }
+        .tax-table .row-save { background: #f1f7f2; font-weight: 700; color: #285430; }
+
+        .plan-card {
+            background: #ffffff;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 18px;
+            margin-bottom: 14px;
+            position: relative;
+        }
+        .plan-card.highlight { border-color: var(--primary-accent); background: #f8fafc; }
+        .plan-badge {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            font-size: 11px;
+            font-weight: 600;
+            padding: 3px 8px;
+            border-radius: 4px;
+            background: #ebf3fa;
+            color: var(--primary-accent);
+        }
+        .plan-items { list-style: none; font-size: 12px; color: #4a4a4a; margin: 10px 0 14px; }
+        .plan-items li { margin-bottom: 4px; }
+        .plan-items li::before { content: "✓ "; color: var(--accent-color); font-weight: bold; }
+        .plan-action-btn {
+            display: block;
+            width: 100%;
+            text-align: center;
+            padding: 10px;
+            background: #25D366;
+            color: #FFFFFF;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
 
         .print-report-title {
             display: none;
         }
 
         @media print {
-            body {
-                background-color: #ffffff !important;
-            }
-            .no-print {
-                display: none !important;
-            }
-            .print-only {
-                display: block !important;
-            }
-            .mode-selector-card {
-                display: none !important;
-            }
-            header {
-                display: none !important;
-            }
+            body { background-color: #ffffff !important; }
+            .no-print { display: none !important; }
+            .print-only { display: block !important; }
+            .mode-selector-card { display: none !important; }
+            header { display: none !important; }
             .print-report-title {
                 display: block !important;
                 text-align: center;
@@ -524,44 +621,71 @@
                 <h3>項目選擇</h3>
                 <div class="radio-group">
                     <label>
-                        <input type="radio" name="viewMode" value="er" checked onchange="switchMode()"> 急症室即時輪候
+                        <input type="radio" name="mainMode" value="insuranceGroup" checked onchange="handleMainModeChange()"> 💼 保險與理財分析工具
                     </label>
                     <label>
-                        <input type="radio" name="viewMode" value="vhis" onchange="switchMode()"> 自願醫保保費查詢
+                        <input type="radio" name="mainMode" value="events" onchange="handleMainModeChange()"> 🎉 活動專區
                     </label>
                     <label>
-                        <input type="radio" name="viewMode" value="insuranceAnalysis" onchange="switchMode()"> 保險與資產配置分析
+                        <input type="radio" name="mainMode" value="er" onchange="handleMainModeChange()"> 🏥 急症室即時輪候
+                    </label>
+                </div>
+
+                <!-- 保險與理財分析底下的細分選擇 -->
+                <div id="insuranceSubMenu" class="sub-menu-container">
+                    <label>
+                        <input type="radio" name="subMode" value="vhis" checked onchange="switchMode()"> 🛡️ 自願醫保保費查詢
                     </label>
                     <label>
-                        <input type="radio" name="viewMode" value="irrCalculator" onchange="switchMode()"> 儲蓄保險 IRR 比較
+                        <input type="radio" name="subMode" value="taxCalculator" onchange="switchMode()"> 🏛️ 扣稅三寶極速試算
                     </label>
                     <label>
-                        <input type="radio" name="viewMode" value="retirementFlow" onchange="switchMode()"> 退休現金流與逆向按揭
+                        <input type="radio" name="subMode" value="irrCalculator" onchange="switchMode()"> 💡 儲蓄保險回報與 IRR 比較
+                    </label>
+                    <label>
+                        <input type="radio" name="subMode" value="insuranceAnalysis" onchange="switchMode()"> 📊 保險與資產配置分析
                     </label>
                 </div>
             </div>
 
             <!-- 急症室即時輪候時間模組 -->
-            <div id="erSection" class="card">
-                <h2 class="section-title">
-                    公立醫院急症室即時輪候時間參考 
-                    <span class="refresh-info" id="updateTime">更新時間：剛剛</span>
-                </h2>
-                <table>
-                    <thead>
-                        <tr>
-                            <th>聯網</th>
-                            <th>醫院名稱</th>
-                            <th>大約等候時間</th>
-                            <th>目前狀態</th>
-                        </tr>
-                    </thead>
-                    <tbody id="erTableBody"></tbody>
-                </table>
+            <div id="erSection" class="card hidden-section">
+                <div class="section-title">
+                    <span>公立醫院急症室即時輪候時間參考</span>
+                    <div class="flex items-center gap-3">
+                        <span class="refresh-info" id="updateTime">正在同步醫管局數據...</span>
+                        <button class="refresh-btn no-print" onclick="loadERData()">🔄 刷新數據</button>
+                    </div>
+                </div>
+
+                <div class="bg-stone-50 border border-stone-200 rounded-lg p-3 text-xs text-stone-600 mb-4 flex items-center justify-between">
+                    <div>
+                        <span class="font-medium text-stone-800">💡 提示：</span> 急症室以「分流制度」處理個案（危殆及危急病人優先診治），以下時間主要為次緊急及非緊急病人之參考輪候時間。
+                    </div>
+                    <span class="text-[11px] text-stone-400">數據來源：香港醫院管理局 (HA)</span>
+                </div>
+
+                <div class="overflow-x-auto">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th style="width: 18%;">聯網</th>
+                                <th style="width: 38%;">醫院名稱</th>
+                                <th style="width: 24%;">預計等候時間</th>
+                                <th style="width: 20%;">輪候概況</th>
+                            </tr>
+                        </thead>
+                        <tbody id="erTableBody">
+                            <tr>
+                                <td colspan="4" style="text-align: center; padding: 25px; color: #888;">正在獲取最新公立醫院輪候數據...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
             </div>
 
             <!-- 自願醫保保費查詢模組 -->
-            <div id="vhisSection" class="card hidden-section">
+            <div id="vhisSection" class="card">
                 <h2 class="section-title">自願醫保 (VHIS) 保費查詢與多公司對比</h2>
                 <div class="form-row">
                     <div class="form-group">
@@ -613,6 +737,167 @@
                         保費列表對比結果 (<span id="displayAge"></span> 歲 / <span id="displayGender"></span>)
                     </h3>
                     <div class="comparison-results-grid" id="comparisonGrid"></div>
+                </div>
+            </div>
+
+            <!-- 扣稅三寶極速試算模組 -->
+            <div id="taxCalculatorSection" class="card hidden-section">
+                <div class="section-title">
+                    <span>2026/27 扣稅三寶極速試算器</span>
+                    <span class="text-xs text-stone-500">自訂保費金額，精準計算應繳稅款與慳稅空間</span>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="form-group">
+                        <label for="monthly-income">每月平均薪金 (HKD)</label>
+                        <div class="input-wrapper">
+                            <span>$</span>
+                            <input type="number" id="monthly-income" class="input-with-symbol" placeholder="例：55000" inputmode="numeric">
+                        </div>
+                        <div class="helper-text">以 12 個月薪金計算（自動扣減強積金 MPF 5%）</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="dependent-parents">供養父母人數（60 歲或以上）</label>
+                        <select id="dependent-parents">
+                            <option value="0">0 位</option>
+                            <option value="1">1 位</option>
+                            <option value="2">2 位</option>
+                            <option value="3">3 位或以上</option>
+                        </select>
+                        <div class="helper-text">每名父母享有免稅額與獨立醫保扣稅額</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="child-count">未成年子女數目</label>
+                        <select id="child-count">
+                            <option value="0">0 位</option>
+                            <option value="1">1 位</option>
+                            <option value="2">2 位</option>
+                            <option value="3">3 位</option>
+                        </select>
+                        <div class="helper-text">每名子女免稅額 HK$130,000</div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="newborn-count">其中初生嬰兒</label>
+                        <select id="newborn-count">
+                            <option value="0">0 位</option>
+                        </select>
+                        <div class="helper-text">初生額外加 HK$130,000 免稅額</div>
+                    </div>
+                </div>
+
+                <div class="border-t border-dashed border-stone-200 pt-4 mt-2 mb-4">
+                    <h3 class="text-xs font-semibold text-stone-600 uppercase tracking-wider mb-3">⚙️ 自訂投保 / 供款金額（年繳）</h3>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label for="vhis-amount">個人自願醫保 (VHIS) 年繳保費 (HKD)</label>
+                            <div class="input-wrapper">
+                                <span>$</span>
+                                <input type="number" id="vhis-amount" class="input-with-symbol" value="8000" placeholder="0" inputmode="numeric">
+                            </div>
+                            <div class="helper-text">法定每人每年扣除上限 HK$8,000</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="qdap-amount">延期年金 (QDAP) / TVC 年供款 (HKD)</label>
+                            <div class="input-wrapper">
+                                <span>$</span>
+                                <input type="number" id="qdap-amount" class="input-with-symbol" value="60000" placeholder="0" inputmode="numeric">
+                            </div>
+                            <div class="helper-text">法定每人每年扣除上限 HK$60,000</div>
+                        </div>
+
+                        <div class="form-group md:col-span-2" id="parent-vhis-group" style="display: none;">
+                            <label for="parents-vhis-amount">每名受養父母 VHIS 年繳保費 (HKD)</label>
+                            <div class="input-wrapper">
+                                <span>$</span>
+                                <input type="number" id="parents-vhis-amount" class="input-with-symbol" value="8000" placeholder="0" inputmode="numeric">
+                            </div>
+                            <div class="helper-text">每名父母額外每年享上限 HK$8,000 扣稅額</div>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="button" class="btn-action" id="btn-submit-tax">即時計算交稅明細與節稅方案</button>
+
+                <div id="result-box" style="display: none; margin-top: 25px;">
+                    <div class="bg-stone-50 border border-stone-200 rounded-lg p-5 text-center mb-6">
+                        <div class="text-xs text-stone-500 mb-1">預計每年最高可慳稅款</div>
+                        <div class="text-3xl font-bold text-red-700" id="tax-saved">$0</div>
+                    </div>
+
+                    <div class="tax-table-container">
+                        <table class="tax-table">
+                            <thead>
+                                <tr>
+                                    <th>項目拆解</th>
+                                    <th class="text-right">扣稅前</th>
+                                    <th class="text-right">扣稅後</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>年度總入息</td>
+                                    <td class="text-right" id="tb-income-before">$0</td>
+                                    <td class="text-right" id="tb-income-after">$0</td>
+                                </tr>
+                                <tr>
+                                    <td>基本免稅額 + MPF</td>
+                                    <td class="text-right" id="tb-allowance-base">-$150,000</td>
+                                    <td class="text-right" id="tb-allowance-base-after">-$150,000</td>
+                                </tr>
+                                <tr>
+                                    <td>子女及初生免稅額</td>
+                                    <td class="text-right" id="tb-allowance-child">-$0</td>
+                                    <td class="text-right" id="tb-allowance-child-after">-$0</td>
+                                </tr>
+                                <tr>
+                                    <td>扣稅三寶實質扣除額</td>
+                                    <td class="text-right">$0</td>
+                                    <td class="text-right" id="tb-deduction-quota">-$0</td>
+                                </tr>
+                                <tr>
+                                    <td>應課稅入息實額</td>
+                                    <td class="text-right" id="tb-net-before">$0</td>
+                                    <td class="text-right" id="tb-net-after">$0</td>
+                                </tr>
+                                <tr class="row-highlight">
+                                    <td>預計應繳薪俸稅</td>
+                                    <td class="text-right" id="tb-tax-before">$0</td>
+                                    <td class="text-right" id="tb-tax-after">$0</td>
+                                </tr>
+                                <tr class="row-save">
+                                    <td colspan="2">🔥 實際少交稅款（慳稅金額）</td>
+                                    <td class="text-right" id="tb-diff-saved">$0</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="text-sm font-semibold text-stone-800 mt-6 mb-3">💡 針對您所填金額的專屬配置方案</div>
+                    <div id="plans-container"></div>
+                </div>
+            </div>
+
+            <!-- 活動專區模組 (Events Section - 即將推出) -->
+            <div id="eventsSection" class="card hidden-section">
+                <div class="section-title">
+                    <span>🎉 活動專區</span>
+                    <span class="text-xs text-stone-500">掌握最新醫療與理財講座資訊</span>
+                </div>
+
+                <div class="text-center py-16 px-4">
+                    <div class="text-4xl mb-3">🚀</div>
+                    <h3 class="text-lg font-medium text-stone-800 mb-2">精彩活動，即將推出</h3>
+                    <p class="text-xs text-stone-500 max-w-sm mx-auto mb-6">
+                        我們正密鑼緊鼓籌備一系列實用的理財、稅務與醫療講座，敬請期待！
+                    </p>
+                    <a href="https://wa.me/85290000000?text=你好！我想查詢最新活動開辦日期" target="_blank" class="inline-block bg-stone-800 text-white text-xs font-medium px-6 py-2.5 rounded-full hover:bg-stone-900 transition shadow-sm">
+                        📲 透過 WhatsApp 查詢最新動態
+                    </a>
                 </div>
             </div>
 
@@ -893,116 +1178,6 @@
                 </div>
             </div>
 
-            <!-- 5. 退休現金流與逆向按揭模擬器模組 (含計算方法註解) -->
-            <div id="retirementFlowSection" class="card hidden-section">
-                <div id="retireApp">
-                    <div class="mb-6 border-b pb-4">
-                        <h2 class="text-xl font-bold text-slate-900">🏖️ 退休現金流與雙重逆向按揭（物業 + 保單）模擬器</h2>
-                        <p class="text-xs text-slate-500">評估退休後每月資金消耗、資產壽命及透過物業與人壽保單逆向按揭補充現金流之效益</p>
-                    </div>
-
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                        <!-- 輸入面板 -->
-                        <div class="lg:col-span-5 bg-[#fcfaf7] p-6 rounded-xl border border-stone-200 space-y-4 text-xs">
-                            <h3 class="font-bold text-sm text-slate-800 border-b pb-2">參數輸入</h3>
-                            
-                            <div>
-                                <label class="block font-medium text-slate-600 mb-1">現時年齡 (歲)</label>
-                                <input v-model.number="currentAge" type="number" class="w-full border rounded p-2 bg-white">
-                            </div>
-                            <div>
-                                <label class="block font-medium text-slate-600 mb-1">預期退休年齡 (歲)</label>
-                                <input v-model.number="retireAge" type="number" class="w-full border rounded p-2 bg-white">
-                            </div>
-                            <div>
-                                <label class="block font-medium text-slate-600 mb-1">預期生活至 (歲)</label>
-                                <input v-model.number="deathAge" type="number" class="w-full border rounded p-2 bg-white">
-                            </div>
-                            <div>
-                                <label class="block font-medium text-slate-600 mb-1">現有退休資產總值 (HKD)</label>
-                                <input v-model.number="liquidAssets" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：2000000">
-                            </div>
-                            <div>
-                                <label class="block font-medium text-slate-600 mb-1">退休後每月期望開支 (HKD)</label>
-                                <input v-model.number="monthlyExpense" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：25000">
-                            </div>
-                            <div>
-                                <label class="block font-medium text-slate-600 mb-1">提取年金 (每月，HKD)</label>
-                                <input v-model.number="monthlyAnnuity" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：5000">
-                            </div>
-                            <div>
-                                <label class="block font-medium text-slate-600 mb-1">其他收入 (每月，HKD)</label>
-                                <input v-model.number="monthlyOtherIncome" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：3000">
-                            </div>
-                            <div>
-                                <label class="block font-medium text-slate-600 mb-1">物業估值 (如考慮物業逆按，HKD)</label>
-                                <input v-model.number="propertyValue" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：6000000">
-                            </div>
-                            <div>
-                                <label class="block font-medium text-slate-600 mb-1">人壽保單身故賠償總額 (如考慮保單逆按，HKD)</label>
-                                <input v-model.number="policyBenefitValue" type="number" class="w-full border rounded p-2 bg-white" placeholder="例如：2000000">
-                            </div>
-                        </div>
-
-                        <!-- 結果分析面板 -->
-                        <div class="lg:col-span-7 bg-white p-6 rounded-xl border border-stone-200 flex flex-col justify-between space-y-6">
-                            <div class="space-y-4">
-                                <h3 class="font-bold text-sm text-slate-800 border-b pb-2">退休現金流與缺口分析</h3>
-
-                                <div class="bg-[#f9f8f6] p-4 rounded-xl border border-stone-200 space-y-2 text-xs">
-                                    <p class="text-slate-600">退休總年期：<span class="font-bold text-slate-900">{{ totalRetireYears }} 年</span> (由 {{ retireAge }} 歲至 {{ deathAge }} 歲)</p>
-                                    
-                                    <p class="text-slate-600">每月淨現金流（開支 - 年金 - 其他收入 - 物業逆按 - 保單逆按）：
-                                        <span class="font-bold text-slate-800">HK$ {{ netMonthlyExpense.toLocaleString() }} / 月</span>
-                                        <span class="text-slate-400 text-[11px] block mt-0.5">
-                                            (開支 ${{ (Number(monthlyExpense) || 0).toLocaleString() }} - 年金 ${{ (Number(monthlyAnnuity) || 0).toLocaleString() }} - 其他收入 ${{ (Number(monthlyOtherIncome) || 0).toLocaleString() }} - 物業逆按 ${{ estimatedReverseMortgageMonthly.toLocaleString() }} - 保單逆按 ${{ estimatedPolicyReverseMonthly.toLocaleString() }})
-                                        </span>
-                                    </p>
-
-                                    <p class="text-slate-600">退休期間總淨需求支出（計及雙重逆按）：<span class="font-bold text-slate-900">HK$ {{ totalNetNeedExpense.toLocaleString() }}</span></p>
-                                    
-                                    <!-- 退休需要資產淨值項目 -->
-                                    <p class="text-slate-600 pt-1 border-t border-stone-200/60">
-                                        🎯 <strong>退休需要資產淨值（總淨需求支出）</strong>：
-                                        <span class="font-bold text-blue-700 text-sm">HK$ {{ totalNetNeedExpense.toLocaleString() }}</span>
-                                        <span class="text-slate-400 text-[11px] block mt-0.5">(已自動計入物業與保單逆向按揭年金收入幫手分擔開支後的淨資金需求)</span>
-                                    </p>
-
-                                    <p class="text-slate-600 pt-1">現有資產能否支撐？ 
-                                        <span class="font-bold px-2 py-0.5 rounded text-white" :class="isAssetEnough ? 'bg-emerald-600' : 'bg-rose-500'">
-                                            {{ isAssetEnough ? '資產充足' : '出現資金耗盡缺口！' }}
-                                        </span>
-                                    </p>
-                                    <p v-if="!isAssetEnough" class="text-rose-600 font-semibold pt-1">
-                                        ⚠️ 預計資產將於約 <span class="underline">{{ exhaustionAge }} 歲</span>時耗盡！
-                                    </p>
-                                </div>
-
-                                <!-- 逆向按揭（安老按揭 + 保單逆按）建議與計算方法註解 -->
-                                <div class="bg-blue-50/60 p-4 rounded-xl border border-blue-100 text-xs space-y-2">
-                                    <h4 class="font-bold text-blue-900">🏠 雙重逆向按揭（安老按揭 + 保單逆按計劃）補充方案</h4>
-                                    <p class="text-slate-600">1. <b>物業逆按估算</b> (估值 HK$ {{ Number(propertyValue).toLocaleString() }})：約 <span class="font-bold text-blue-700">HK$ {{ estimatedReverseMortgageMonthly.toLocaleString() }} / 月</span></p>
-                                    <p class="text-slate-600">2. <b>保單逆按估算</b> (身故賠償 HK$ {{ Number(policyBenefitValue).toLocaleString() }})：約 <span class="font-bold text-blue-700">HK$ {{ estimatedPolicyReverseMonthly.toLocaleString() }} / 月</span> (按 15 年期估算)</p>
-                                    <p class="text-[11px] text-slate-500">結合物業與人壽保單雙重逆按，全面解鎖非流動資產，達至最大化現金流效益。</p>
-
-                                    <!-- 計算方法註解區塊 -->
-                                    <div class="mt-3 pt-2 border-t border-blue-200/60 text-[10px] text-blue-900/80 space-y-1 bg-blue-100/40 p-2.5 rounded-lg">
-                                        <p class="font-bold text-blue-950">ℹ️ 逆向按揭估算方法註解：</p>
-                                        <p>1. <b>物業逆按</b>：以物業估值的 30% 作提取總池，按 15 年（180個月）平均分攤。</p>
-                                        <p>2. <b>保單逆按</b>：以身故賠償額的 50%（約數）作為可用貸款基準，按 15 年固定年期平均分攤。</p>
-                                        <p>3. <b>實際審批</b>：實際批核金額需根據香港按證保險公司（HKMC）之官方年金表及最終批核為準。</p>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="text-right text-[11px] text-slate-400">
-                                * 註：計算未計及通脹率及投資回報率，僅作初步現金流壓力測試參考。
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
             <!-- 底部聯絡我們 -->
             <div class="footer-contact-bar">
                 <button class="btn-contact" onclick="goToPage('contactPage')">聯絡我們</button>
@@ -1050,6 +1225,8 @@
     </div>
 
 <script>
+    const WHATSAPP_PHONE = '85290000000'; // 👈 填入您的專屬 WhatsApp 號碼[cite: 1]
+
     function goToPage(pageId) {
         const pages = ['homePage', 'dataPage', 'contactPage'];
         
@@ -1110,17 +1287,165 @@
         }
     }
 
-    const erData = [
-        { cluster: "香港島", hospital: "東區尤德夫人那打素醫院", hours: "大約 2 - 3 小時", level: "medium" },
-        { cluster: "香港島", hospital: "瑪麗醫院", hours: "大約 3 - 4 小時", level: "long" },
-        { cluster: "香港島", hospital: "律敦治醫院", hours: "大約 1 - 2 小時", level: "short" },
-        { cluster: "九龍中", hospital: "伊利沙伯醫院 / 廣華醫院", hours: "大約 3 - 4 小時", level: "long" },
-        { cluster: "九龍中", hospital: "基督教聯合醫院", hours: "大約 3 - 5 小時", level: "long" },
-        { cluster: "九龍西", hospital: "瑪嘉烈醫院", hours: "大約 3 - 4 小時", level: "long" },
-        { cluster: "新界東", hospital: "威爾斯親王醫院", hours: "大約 4 小時以上", level: "long" },
-        { cluster: "新界西", hospital: "屯門醫院", hours: "大約 4 小時以上", level: "long" }
+    // ==========================================
+    // 醫管局急症室數據與字典
+    // ==========================================
+    const hospitalClusterMap = {
+        "東區尤德夫人那打素醫院": "港島東聯網",
+        "律敦治醫院": "港島東聯網",
+        "長洲醫院": "港島東聯網",
+        "瑪麗醫院": "港島西聯網",
+        "廣華醫院": "九龍中聯網",
+        "伊利沙伯醫院": "九龍中聯網",
+        "基督教聯合醫院": "九龍東聯網",
+        "將軍澳醫院": "九龍東聯網",
+        "明愛醫院": "九龍西聯網",
+        "瑪嘉烈醫院": "九龍西聯網",
+        "仁濟醫院": "九龍西聯網",
+        "雅麗氏何妙齡那打素醫院": "新界東聯網",
+        "北區醫院": "新界東聯網",
+        "威爾斯親王醫院": "新界東聯網",
+        "博愛醫院": "新界西聯網",
+        "屯門醫院": "新界西聯網",
+        "天水圍醫院": "新界西聯網",
+        "北大嶼山醫院": "九龍西聯網"
+    };
+
+    const fallbackErData = [
+        { cluster: "港島東聯網", hospital: "東區尤德夫人那打素醫院", hours: "大約 2 - 3 小時", level: "medium" },
+        { cluster: "港島東聯網", hospital: "律敦治醫院", hours: "大約 1 - 2 小時", level: "short" },
+        { cluster: "港島西聯網", hospital: "瑪麗醫院", hours: "大約 3 - 4 小時", level: "long" },
+        { cluster: "九龍中聯網", hospital: "伊利沙伯醫院", hours: "大約 3 - 4 小時", level: "long" },
+        { cluster: "九龍中聯網", hospital: "廣華醫院", hours: "大約 2 - 3 小時", level: "medium" },
+        { cluster: "九龍中聯網", hospital: "啟德醫院 (Kai Tak Hospital)", hours: "分階段投入服務 (急症室規劃中)", level: "info" },
+        { cluster: "九龍東聯網", hospital: "基督教聯合醫院", hours: "大約 3 - 5 小時", level: "long" },
+        { cluster: "九龍東聯網", hospital: "將軍澳醫院", hours: "大約 2 - 3 小時", level: "medium" },
+        { cluster: "九龍西聯網", hospital: "瑪嘉烈醫院", hours: "大約 3 - 4 小時", level: "long" },
+        { cluster: "九龍西聯網", hospital: "明愛醫院", hours: "大約 2 - 3 小時", level: "medium" },
+        { cluster: "九龍西聯網", hospital: "仁濟醫院", hours: "大約 2 - 3 小時", level: "medium" },
+        { cluster: "九龍西聯網", hospital: "北大嶼山醫院", hours: "大約 1 - 2 小時", level: "short" },
+        { cluster: "新界東聯網", hospital: "威爾斯親王醫院", hours: "大約 4 小時以上", level: "long" },
+        { cluster: "新界東聯網", hospital: "北區醫院", hours: "大約 3 - 4 小時", level: "long" },
+        { cluster: "新界東聯網", hospital: "雅麗氏何妙齡那打素醫院", hours: "大約 2 - 3 小時", level: "medium" },
+        { cluster: "新界西聯網", hospital: "屯門醫院", hours: "大約 4 小時以上", level: "long" },
+        { cluster: "新界西聯網", hospital: "博愛醫院", hours: "大約 2 - 3 小時", level: "medium" },
+        { cluster: "新界西聯網", hospital: "天水圍醫院", hours: "大約 2 - 3 小時", level: "medium" }
     ];
 
+    async function loadERData() {
+        const tbody = document.getElementById('erTableBody');
+        tbody.innerHTML = `<tr><td colspan="4" style="text-align:center; padding: 25px; color:#888;">正在連接香港醫管局伺服器，更新最新輪候時間...</td></tr>`;
+
+        const apiUrl = 'https://api.data.gov.hk/v1/filter?q={"resource":"http://www.ha.org.hk/opendata/aed/aedwt.json"}';
+
+        try {
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 4000);
+
+            const res = await fetch(apiUrl, { signal: controller.signal });
+            clearTimeout(timeoutId);
+
+            if (!res.ok) throw new Error("HTTP error " + res.status);
+            const data = await res.json();
+
+            let waitList = [];
+            let updateTimeStr = '';
+
+            if (Array.isArray(data)) {
+                waitList = data;
+            } else if (data.waitTime) {
+                waitList = data.waitTime;
+                updateTimeStr = data.updateTime || '';
+            }
+
+            if (!waitList || waitList.length === 0) throw new Error("Empty wait list");
+            renderERRows(waitList, updateTimeStr);
+        } catch (error) {
+            console.warn("使用備份數據庫顯示:", error.message);
+            renderFallbackER();
+        }
+    }
+
+    function renderERRows(list, updateTimeStr) {
+        const tbody = document.getElementById('erTableBody');
+        tbody.innerHTML = "";
+
+        list.forEach(item => {
+            const hName = item.hospName || item.hospital || "公立醫院";
+            const waitTime = item.topWait || item.hours || "正常輪候";
+            const cluster = hospitalClusterMap[hName] || "其他聯網";
+
+            let badgeClass = "status-short";
+            let statusText = "輪候時間正常";
+
+            if (waitTime.includes("超過 4") || waitTime.includes("超過 5") || waitTime.includes("超過 6") || waitTime.includes("超過 7") || waitTime.includes("超過 8")) {
+                badgeClass = "status-long";
+                statusText = "輪候時間頗長";
+            } else if (waitTime.includes("超過 2") || waitTime.includes("超過 3") || waitTime.includes("大約 2") || waitTime.includes("大約 3")) {
+                badgeClass = "status-medium";
+                statusText = "輪候時間中等";
+            }
+
+            tbody.innerHTML += `
+                <tr>
+                    <td>${cluster}</td>
+                    <td><strong>${hName}</strong></td>
+                    <td><span class="waiting-time-alert">${waitTime}</span></td>
+                    <td><span class="status-badge ${badgeClass}">${statusText}</span></td>
+                </tr>
+            `;
+        });
+
+        tbody.innerHTML += `
+            <tr style="background-color: #faf9f6;">
+                <td>九龍中聯網</td>
+                <td><strong>啟德醫院 (Kai Tak Hospital)</strong> <span class="text-[11px] text-stone-500">(新院落成)</span></td>
+                <td><span class="text-stone-600 text-xs">專科門診分階段啟用 (急症室第二期營運)</span></td>
+                <td><span class="status-badge status-info">籌備啟用中</span></td>
+            </tr>
+        `;
+
+        const now = new Date();
+        const displayTime = updateTimeStr || `${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
+        document.getElementById('updateTime').innerText = `醫管局即時更新：${displayTime}`;
+    }
+
+    function renderFallbackER() {
+        const tbody = document.getElementById('erTableBody');
+        tbody.innerHTML = "";
+        
+        fallbackErData.forEach(item => {
+            let badgeClass = "status-short";
+            let statusText = "輪候時間正常";
+
+            if (item.level === "long") {
+                badgeClass = "status-long";
+                statusText = "輪候時間頗長";
+            } else if (item.level === "medium") {
+                badgeClass = "status-medium";
+                statusText = "輪候時間中等";
+            } else if (item.level === "info") {
+                badgeClass = "status-info";
+                statusText = "籌備啟用中";
+            }
+
+            tbody.innerHTML += `
+                <tr>
+                    <td>${item.cluster}</td>
+                    <td><strong>${item.hospital}</strong></td>
+                    <td><span class="${item.level === 'info' ? 'text-stone-600 text-xs' : 'waiting-time-alert'}">${item.hours}</span></td>
+                    <td><span class="status-badge ${badgeClass}">${statusText}</span></td>
+                </tr>
+            `;
+        });
+
+        const now = new Date();
+        document.getElementById('updateTime').innerText = `更新時間：${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')} (參考基準)`;
+    }
+
+    // ==========================================
+    // 自願醫保 (VHIS) 保費查詢與對比邏輯
+    // ==========================================
     const allProviders = [
         { name: "香港永明金融 (Sun Life)", category: "STANDARD", type: "標準計劃 (Standard Plan)", baseFactor: 2200 },
         { name: "香港永明金融 (Sun Life)", category: "FLEXI", type: "靈活醫療保障計劃 (Flexi Plan)", baseFactor: 3100 },
@@ -1153,23 +1478,6 @@
         { name: "中銀集團人壽 (BOC Life)", category: "FLEXI", type: "自願醫保靈活計劃", baseFactor: 2900 }
     ];
 
-    function loadERData() {
-        const tbody = document.getElementById('erTableBody');
-        tbody.innerHTML = "";
-        erData.forEach(item => {
-            let badgeClass = item.level === "medium" ? "status-medium" : (item.level === "long" ? "status-long" : "status-short");
-            let statusText = item.level === "medium" ? "輪候時間中等" : (item.level === "long" ? "輪候時間頗長" : "輪候時間較短");
-            tbody.innerHTML += `<tr>
-                <td>${item.cluster}</td>
-                <td><strong>${item.hospital}</strong></td>
-                <td><span class="waiting-time-alert">${item.hours}</span></td>
-                <td><span class="status-badge ${badgeClass}">${statusText}</span></td>
-            </tr>`;
-        });
-        const now = new Date();
-        document.getElementById('updateTime').innerText = `更新時間：${now.getHours().toString().padStart(2, '0')}:${now.getMinutes().toString().padStart(2, '0')}`;
-    }
-
     function loadCompanyCheckboxes() {
         const container = document.getElementById('companyCheckboxes');
         container.innerHTML = "";
@@ -1193,35 +1501,6 @@
             element.checked = false;
         }
     }
-
-    function switchMode() {
-        const mode = document.querySelector('input[name="viewMode"]:checked').value;
-        document.getElementById('erSection').classList.add('hidden-section');
-        document.getElementById('vhisSection').classList.add('hidden-section');
-        document.getElementById('insuranceAnalysisSection').classList.add('hidden-section');
-        document.getElementById('irrCalculatorSection').classList.add('hidden-section');
-        document.getElementById('retirementFlowSection').classList.add('hidden-section');
-
-        if (mode === 'er') document.getElementById('erSection').classList.remove('hidden-section');
-        else if (mode === 'vhis') document.getElementById('vhisSection').classList.remove('hidden-section');
-        else if (mode === 'insuranceAnalysis') {
-            document.getElementById('insuranceAnalysisSection').classList.remove('hidden-section');
-            calculateInsuranceSummary();
-        }
-        else if (mode === 'irrCalculator') {
-            document.getElementById('irrCalculatorSection').classList.remove('hidden-section');
-        }
-        else if (mode === 'retirementFlow') {
-            document.getElementById('retirementFlowSection').classList.remove('hidden-section');
-        }
-    }
-
-    window.onload = function() {
-        loadERData();
-        loadCompanyCheckboxes();
-        document.getElementById('dataPage').style.display = 'none';
-        document.getElementById('contactPage').style.display = 'none';
-    };
 
     function calculateVHIS() {
         const ageInput = document.getElementById('age').value;
@@ -1300,7 +1579,205 @@
     }
 
     // ==========================================
-    // 保險與資產配置分析專屬 JavaScript 邏輯
+    // 扣稅三寶極速試算器核心邏輯
+    // ==========================================
+    function computeProgressiveTax(netIncome) {
+        if (netIncome <= 0) return 0;
+        let tax = 0;
+        const brackets = [
+            { cap: 50000, rate: 0.02 },
+            { cap: 50000, rate: 0.06 },
+            { cap: 50000, rate: 0.10 },
+            { cap: 50000, rate: 0.14 }
+        ];
+        let remaining = netIncome;
+        for (let i = 0; i < brackets.length; i++) {
+            if (remaining > brackets[i].cap) {
+                tax += brackets[i].cap * brackets[i].rate;
+                remaining -= brackets[i].cap;
+            } else {
+                tax += remaining * brackets[i].rate;
+                remaining = 0;
+                break;
+            }
+        }
+        if (remaining > 0) tax += remaining * 0.17;
+        return Math.round(tax);
+    }
+
+    function runTaxCalculation() {
+        try {
+            const incomeInput = document.getElementById('monthly-income').value;
+            const income = parseFloat(incomeInput);
+            if (!incomeInput || isNaN(income) || income <= 0) {
+                alert('請先輸入正確的每月平均薪金！');
+                return;
+            }
+
+            const childCount = parseInt(document.getElementById('child-count').value || '0', 10);
+            const newbornCount = parseInt(document.getElementById('newborn-count').value || '0', 10);
+            const parents = parseInt(document.getElementById('dependent-parents').value || '0', 10);
+
+            const inputVhis = Math.max(0, parseFloat(document.getElementById('vhis-amount').value || '0'));
+            const inputQdap = Math.max(0, parseFloat(document.getElementById('qdap-amount').value || '0'));
+            const inputParentVhis = Math.max(0, parseFloat(document.getElementById('parents-vhis-amount').value || '0'));
+
+            const annualIncome = income * 12;
+            const mpfDeduction = Math.min(annualIncome * 0.05, 18000);
+            const basicAllowance = 132000;
+            const baseAllowances = mpfDeduction + basicAllowance;
+            const childAllowanceTotal = (childCount * 130000) + (newbornCount * 130000);
+            const totalStatutoryAllowances = baseAllowances + childAllowanceTotal;
+
+            const netBefore = Math.max(0, annualIncome - totalStatutoryAllowances);
+            const taxBefore = computeProgressiveTax(netBefore);
+
+            const effectiveVhisSelf = Math.min(inputVhis, 8000);
+            const effectiveQdap = Math.min(inputQdap, 60000);
+            const effectiveParentVhis = parents * Math.min(inputParentVhis, 8000);
+            const totalEffectiveDeduction = effectiveVhisSelf + effectiveQdap + effectiveParentVhis;
+
+            const netAfter = Math.max(0, netBefore - totalEffectiveDeduction);
+            const taxAfter = computeProgressiveTax(netAfter);
+            const actualSaved = taxBefore - taxAfter;
+
+            document.getElementById('tax-saved').innerText = 'HK$ ' + actualSaved.toLocaleString();
+            document.getElementById('tb-income-before').innerText = 'HK$ ' + annualIncome.toLocaleString();
+            document.getElementById('tb-income-after').innerText = 'HK$ ' + annualIncome.toLocaleString();
+            document.getElementById('tb-allowance-base').innerText = '-HK$ ' + baseAllowances.toLocaleString();
+            document.getElementById('tb-allowance-base-after').innerText = '-HK$ ' + baseAllowances.toLocaleString();
+            document.getElementById('tb-allowance-child').innerText = '-HK$ ' + childAllowanceTotal.toLocaleString();
+            document.getElementById('tb-allowance-child-after').innerText = '-HK$ ' + childAllowanceTotal.toLocaleString();
+            document.getElementById('tb-deduction-quota').innerText = '-HK$ ' + totalEffectiveDeduction.toLocaleString();
+            document.getElementById('tb-net-before').innerText = 'HK$ ' + netBefore.toLocaleString();
+            document.getElementById('tb-net-after').innerText = 'HK$ ' + netAfter.toLocaleString();
+            document.getElementById('tb-tax-before').innerText = 'HK$ ' + taxBefore.toLocaleString();
+            document.getElementById('tb-tax-after').innerText = 'HK$ ' + taxAfter.toLocaleString();
+            document.getElementById('tb-diff-saved').innerText = 'HK$ ' + actualSaved.toLocaleString();
+
+            const container = document.getElementById('plans-container');
+            container.innerHTML = '';
+            const plans = [];
+
+            if (effectiveVhisSelf > 0) {
+                const taxAfterV = computeProgressiveTax(Math.max(0, netBefore - effectiveVhisSelf));
+                plans.push({
+                    name: '自願醫保配置（個人）',
+                    badge: '醫療保障',
+                    desc: `預計自填年繳保費 HK$${inputVhis.toLocaleString()}${inputVhis > 8000 ? '（扣除額按上限 $8,000 計算）' : ''}`,
+                    items: [
+                        `每年可為您節省薪俸稅：HK$ ${(taxBefore - taxAfterV).toLocaleString()}`,
+                        '配合公司團體保險抵消自付額，享有全數私家病房保障'
+                    ],
+                    highlight: false
+                });
+            }
+
+            if (effectiveQdap > 0) {
+                const taxAfterQ = computeProgressiveTax(Math.max(0, netBefore - (effectiveVhisSelf + effectiveQdap)));
+                plans.push({
+                    name: '延期年金 / TVC 配置',
+                    badge: '長線資產',
+                    desc: `預計年供款 HK$${inputQdap.toLocaleString()}${inputQdap > 60000 ? '（扣除額按上限 $60,000 計算）' : ''}`,
+                    items: [
+                        `此項每年額外幫您慳稅：HK$ ${(taxBefore - taxAfterQ - (taxBefore - computeProgressiveTax(Math.max(0, netBefore - effectiveVhisSelf)))).toLocaleString()}`,
+                        '將原需繳納之稅款轉為保證回報資產，適宜長線無風險累積'
+                    ],
+                    highlight: true
+                });
+            }
+
+            if (parents > 0 && effectiveParentVhis > 0) {
+                plans.push({
+                    name: '受養父母醫保配置',
+                    badge: '家庭加成',
+                    desc: `供養 ${parents} 位長者，申報額外扣除額 HK$${effectiveParentVhis.toLocaleString()}`,
+                    items: [
+                        '為父母構建專屬醫療安全網，預防突發高額開支',
+                        '孝親保費支出直接抵扣個人薪俸稅'
+                    ],
+                    highlight: false
+                });
+            }
+
+            plans.forEach(p => {
+                const waMsg = encodeURIComponent(
+                    `你好！我月薪約 HK$${income.toLocaleString()}，喺試算器輸入自願醫保保費 $${inputVhis} 及年金 $${inputQdap}，預計慳到 HK$${actualSaved.toLocaleString()} 稅。想詳細諮詢【${p.name}】嘅市場產品橫向對比！`
+                );
+                const card = document.createElement('div');
+                card.className = `plan-card ${p.highlight ? 'highlight' : ''}`;
+                card.innerHTML = `
+                    <span class="plan-badge">${p.badge}</span>
+                    <div style="font-weight: 600; font-size: 15px; margin-bottom: 4px;">${p.name}</div>
+                    <div style="font-size: 12px; color: var(--sub-text); margin-bottom: 8px;">${p.desc}</div>
+                    <ul class="plan-items">${p.items.map(i => `<li>${i}</li>`).join('')}</ul>
+                    <a href="https://wa.me/${WHATSAPP_PHONE}?text=${waMsg}" target="_blank" class="plan-action-btn">📲 索取市場產品對比表及方案</a>
+                `;
+                container.appendChild(card);
+            });
+
+            const resBox = document.getElementById('result-box');
+            resBox.style.display = 'block';
+            resBox.scrollIntoView({ behavior: 'smooth' });
+        } catch (err) {
+            alert('計算時出現錯誤：' + err.message);
+        }
+    }
+
+    // ==========================================
+    // 導航主分類與子分類切換邏輯
+    // ==========================================
+    function handleMainModeChange() {
+        const mainMode = document.querySelector('input[name="mainMode"]:checked').value;
+        const subMenu = document.getElementById('insuranceSubMenu');
+
+        // 先隱藏所有大區塊
+        document.getElementById('erSection').classList.add('hidden-section');
+        document.getElementById('vhisSection').classList.add('hidden-section');
+        document.getElementById('taxCalculatorSection').classList.add('hidden-section');
+        document.getElementById('eventsSection').classList.add('hidden-section');
+        document.getElementById('insuranceAnalysisSection').classList.add('hidden-section');
+        document.getElementById('irrCalculatorSection').classList.add('hidden-section');
+
+        if (mainMode === 'insuranceGroup') {
+            subMenu.style.display = 'flex';
+            // 觸發當前子選項的切換
+            switchMode();
+        } else {
+            subMenu.style.display = 'none';
+            if (mainMode === 'events') {
+                document.getElementById('eventsSection').classList.remove('hidden-section');
+            } else if (mainMode === 'er') {
+                document.getElementById('erSection').classList.remove('hidden-section');
+            }
+        }
+    }
+
+    function switchMode() {
+        const mainMode = document.querySelector('input[name="mainMode"]:checked').value;
+        if (mainMode !== 'insuranceGroup') return;
+
+        const subMode = document.querySelector('input[name="subMode"]:checked').value;
+        
+        document.getElementById('vhisSection').classList.add('hidden-section');
+        document.getElementById('taxCalculatorSection').classList.add('hidden-section');
+        document.getElementById('irrCalculatorSection').classList.add('hidden-section');
+        document.getElementById('insuranceAnalysisSection').classList.add('hidden-section');
+
+        if (subMode === 'vhis') {
+            document.getElementById('vhisSection').classList.remove('hidden-section');
+        } else if (subMode === 'taxCalculator') {
+            document.getElementById('taxCalculatorSection').classList.remove('hidden-section');
+        } else if (subMode === 'irrCalculator') {
+            document.getElementById('irrCalculatorSection').classList.remove('hidden-section');
+        } else if (subMode === 'insuranceAnalysis') {
+            document.getElementById('insuranceAnalysisSection').classList.remove('hidden-section');
+            calculateInsuranceSummary();
+        }
+    }
+
+    // ==========================================
+    // 保險與資產配置分析專屬邏輯
     // ==========================================
     let insGapChartInstance = null;
     let insCalculatedAge = '-';
@@ -1447,8 +1924,8 @@
         let totalExistingRetirement = 0;
         let totalAnnualPremium = 0;
         let totalMonthlyEquivalent = 0;
-        let totalPolicyCashValueOnly = 0; 
-        let totalMpfValueOnly = 0;        
+        let totalPolicyCashValueOnly = 0;
+        let totalMpfValueOnly = 0;
         let policyCount = 0;
 
         const policyItems = document.querySelectorAll('#insPoliciesContainer .policy-item');
@@ -1676,7 +2153,7 @@
     }
 
     // ==========================================
-    // Vue 3 儲蓄保險 IRR 比較系統初始化
+    // Vue 3 儲蓄保險回報與 IRR 比較系統初始化
     // ==========================================
     const { createApp, ref, computed } = Vue;
     createApp({
@@ -1782,64 +2259,44 @@
     }).mount('#irrApp');
 
     // ==========================================
-    // 6. 退休現金流與逆向按揭模擬器 Vue 初始化
+    // 頁面初始化與事件綁定
     // ==========================================
-    createApp({
-        setup() {
-            const currentAge = ref(45);
-            const retireAge = ref(65);
-            const deathAge = ref(85);
-            const liquidAssets = ref(2000000);
-            const monthlyExpense = ref(25000);
-            const monthlyAnnuity = ref(0);
-            const monthlyOtherIncome = ref(0);
-            const propertyValue = ref(6000000);
-            const policyBenefitValue = ref(2000000);
+    window.onload = function() {
+        loadERData();
+        loadCompanyCheckboxes();
+        document.getElementById('dataPage').style.display = 'none';
+        document.getElementById('contactPage').style.display = 'none';
 
-            const totalRetireYears = computed(() => Math.max(0, deathAge.value - retireAge.value));
-            
-            // 估算物業逆向按揭每月年金 (以估值 30% 作為提取池，分 15 年 / 180個月)
-            const estimatedReverseMortgageMonthly = computed(() => {
-                if (propertyValue.value <= 0) return 0;
-                const usablePool = propertyValue.value * 0.30;
-                return Math.round(usablePool / 180);
+        // 扣稅計算機事件綁定
+        const btnCalcTax = document.getElementById('btn-submit-tax');
+        if (btnCalcTax) btnCalcTax.addEventListener('click', runTaxCalculation);
+
+        const depParents = document.getElementById('dependent-parents');
+        if (depParents) {
+            depParents.addEventListener('change', function() {
+                const pCount = parseInt(this.value, 10);
+                const parentGroup = document.getElementById('parent-vhis-group');
+                if (parentGroup) parentGroup.style.display = pCount > 0 ? 'block' : 'none';
             });
-
-            // 估算保單逆向按揭每月年金 (以身故賠償額 50% 作可用貸款基準，分 15 年 / 180個月)
-            const estimatedPolicyReverseMonthly = computed(() => {
-                if (policyBenefitValue.value <= 0) return 0;
-                const policyPool = policyBenefitValue.value * 0.50;
-                return Math.round(policyPool / 180);
-            });
-            
-            // 計算扣除年金、其他收入及雙重逆按後的每月淨開支
-            const netMonthlyExpense = computed(() => {
-                const expense = Number(monthlyExpense.value) || 0;
-                const annuity = Number(monthlyAnnuity.value) || 0;
-                const other = Number(monthlyOtherIncome.value) || 0;
-                const revMortgage = estimatedReverseMortgageMonthly.value;
-                const policyRev = estimatedPolicyReverseMonthly.value;
-                return Math.max(0, expense - annuity - other - revMortgage - policyRev);
-            });
-
-            const totalNetNeedExpense = computed(() => netMonthlyExpense.value * 12 * totalRetireYears.value);
-
-            const isAssetEnough = computed(() => (Number(liquidAssets.value) || 0) >= totalNetNeedExpense.value);
-
-            const exhaustionAge = computed(() => {
-                if (isAssetEnough.value) return null;
-                const annualNetNeed = netMonthlyExpense.value * 12;
-                if (annualNetNeed <= 0) return retireAge.value;
-                const yearsCanLast = (Number(liquidAssets.value) || 0) / annualNetNeed;
-                return Math.round(retireAge.value + yearsCanLast);
-            });
-
-            return {
-                currentAge, retireAge, deathAge, liquidAssets, monthlyExpense, monthlyAnnuity, monthlyOtherIncome, propertyValue, policyBenefitValue,
-                totalRetireYears, estimatedReverseMortgageMonthly, estimatedPolicyReverseMonthly, netMonthlyExpense, totalNetNeedExpense, isAssetEnough, exhaustionAge
-            };
         }
-    }).mount('#retireApp');
+
+        const childCountEl = document.getElementById('child-count');
+        if (childCountEl) {
+            childCountEl.addEventListener('change', function() {
+                const c = parseInt(this.value, 10);
+                const nb = document.getElementById('newborn-count');
+                const cur = parseInt(nb.value, 10);
+                nb.innerHTML = '';
+                for (let i = 0; i <= c; i++) {
+                    const opt = document.createElement('option');
+                    opt.value = i;
+                    opt.textContent = `${i} 位`;
+                    nb.appendChild(opt);
+                }
+                nb.value = Math.min(cur, c);
+            });
+        }
+    };
 </script>
 
 </body>
