@@ -146,13 +146,13 @@
         }
 
         .container {
-            max-width: 1050px;
+            max-width: 1200px;
             margin: 0 auto;
         }
 
         header {
             text-align: center;
-            margin-bottom: 40px;
+            margin-bottom: 30px;
             border-bottom: 1px solid var(--border-color);
             padding-bottom: 20px;
             position: relative;
@@ -193,77 +193,101 @@
             letter-spacing: 1px;
         }
 
-        .mode-selector-card {
+        /* 左右兩欄主體排版 */
+        .main-layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .main-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* 左側選項表樣式 */
+        .sidebar-card {
             background-color: var(--card-bg);
             border-radius: 6px;
             box-shadow: 0 2px 8px rgba(0,0,0,0.02);
-            padding: 24px;
-            margin-bottom: 30px;
+            padding: 20px;
             border: 1px solid var(--border-color);
-            text-align: center;
+            position: sticky;
+            top: 20px;
         }
 
-        .mode-selector-card h3 {
+        .sidebar-card h3 {
             margin-top: 0;
             font-size: 13px;
             color: var(--sub-text);
             letter-spacing: 1.5px;
             margin-bottom: 15px;
             text-transform: uppercase;
+            text-align: center;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 8px;
         }
 
-        .radio-group {
-            display: inline-flex;
-            gap: 12px;
+        .radio-group-vertical {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
             font-size: 13px;
-            cursor: pointer;
-            flex-wrap: wrap;
-            justify-content: center;
         }
 
-        .radio-group label {
+        .radio-group-vertical label {
             cursor: pointer;
             display: flex;
             align-items: center;
-            gap: 6px;
-            padding: 6px 14px;
-            border-radius: 20px;
-            transition: all 0.3s ease;
+            gap: 8px;
+            padding: 8px 12px;
+            border-radius: 6px;
+            transition: all 0.2s ease;
             border: 1px solid transparent;
             background-color: #faf8f5;
+            color: var(--text-color);
+            margin-bottom: 0;
         }
 
-        .radio-group label:hover {
+        .radio-group-vertical label:hover {
             background-color: #f2ece4;
+            border-color: var(--border-color);
         }
 
-        /* 下拉細分選單樣式 */
-        .sub-menu-container {
+        /* 側邊欄選中高亮樣式 */
+        .radio-group-vertical label.active-menu {
+            background-color: #ebf3fa;
+            border-color: var(--primary-accent);
+            color: var(--primary-accent);
+            font-weight: 600;
+        }
+
+        /* 左側細分選單樣式 */
+        .sub-menu-vertical {
             background: #f7f4ee;
             border: 1px solid var(--border-color);
             border-radius: 6px;
-            padding: 12px 20px;
-            margin-top: 15px;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 8px;
             display: flex;
-            justify-content: center;
-            gap: 15px;
-            flex-wrap: wrap;
-            align-items: center;
+            flex-direction: column;
+            gap: 6px;
         }
-        .sub-menu-container label {
-            margin-bottom: 0;
-            font-size: 13px;
-            font-weight: 500;
-            color: var(--text-color);
+        .sub-menu-vertical label {
+            font-size: 12px;
             background: #fff;
-            padding: 6px 14px;
-            border-radius: 16px;
+            padding: 6px 10px;
+            border-radius: 4px;
             border: 1px solid var(--border-color);
-            box-shadow: 0 1px 3px rgba(0,0,0,0.02);
         }
-        .sub-menu-container label:hover {
-            border-color: var(--primary-accent);
-            color: var(--primary-accent);
+        .sub-menu-vertical label.active-submenu {
+            background-color: #e8ede4;
+            border-color: var(--success-color);
+            color: var(--success-color);
+            font-weight: 600;
         }
 
         .card {
@@ -271,7 +295,7 @@
             border-radius: 6px;
             box-shadow: 0 4px 12px rgba(0,0,0,0.02);
             padding: 30px;
-            margin-bottom: 30px;
+            margin-bottom: 0;
             border: 1px solid var(--border-color);
         }
 
@@ -370,14 +394,18 @@
             padding: 30px 0;
             margin-top: 40px;
             border-top: 1px solid var(--border-color);
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
         .btn-contact {
             background-color: var(--primary-accent);
             color: white;
             border: none;
-            padding: 12px 30px;
-            font-size: 14px;
+            padding: 12px 24px;
+            font-size: 13px;
             border-radius: 20px;
             cursor: pointer;
             letter-spacing: 1.5px;
@@ -569,7 +597,7 @@
             body { background-color: #ffffff !important; }
             .no-print { display: none !important; }
             .print-only { display: block !important; }
-            .mode-selector-card { display: none !important; }
+            .sidebar-card { display: none !important; }
             header { display: none !important; }
             .print-report-title {
                 display: block !important;
@@ -614,564 +642,819 @@
             <header>
                 <button class="btn-back" onclick="goToPage('homePage')">← 返回主頁</button>
                 <h1>醫療與理財資訊參照</h1>
-                <p>－ 簡約、自然、流暢 －</p>
+                <p>－ 簡約，自然，流暢 －</p>
             </header>
 
-            <div class="mode-selector-card">
-                <h3>項目選擇</h3>
-                <div class="radio-group">
-                    <label>
-                        <input type="radio" name="mainMode" value="insuranceGroup" checked onchange="handleMainModeChange()"> 💼 保險與理財分析工具
-                    </label>
-                    <label>
-                        <input type="radio" name="mainMode" value="events" onchange="handleMainModeChange()"> 🎉 活動專區
-                    </label>
-                    <label>
-                        <input type="radio" name="mainMode" value="er" onchange="handleMainModeChange()"> 🏥 急症室即時輪候
-                    </label>
-                </div>
-
-                <!-- 保險與理財分析底下的細分選擇 -->
-                <div id="insuranceSubMenu" class="sub-menu-container">
-                    <label>
-                        <input type="radio" name="subMode" value="vhis" checked onchange="switchMode()"> 🛡️ 自願醫保保費查詢
-                    </label>
-                    <label>
-                        <input type="radio" name="subMode" value="taxCalculator" onchange="switchMode()"> 🏛️ 扣稅三寶極速試算
-                    </label>
-                    <label>
-                        <input type="radio" name="subMode" value="irrCalculator" onchange="switchMode()"> 💡 儲蓄保險回報與 IRR 比較
-                    </label>
-                    <label>
-                        <input type="radio" name="subMode" value="insuranceAnalysis" onchange="switchMode()"> 📊 保險與資產配置分析
-                    </label>
-                </div>
-            </div>
-
-            <!-- 急症室即時輪候時間模組 -->
-            <div id="erSection" class="card hidden-section">
-                <div class="section-title">
-                    <span>公立醫院急症室即時輪候時間參考</span>
-                    <div class="flex items-center gap-3">
-                        <span class="refresh-info" id="updateTime">正在同步醫管局數據...</span>
-                        <button class="refresh-btn no-print" onclick="loadERData()">🔄 刷新數據</button>
-                    </div>
-                </div>
-
-                <div class="bg-stone-50 border border-stone-200 rounded-lg p-3 text-xs text-stone-600 mb-4 flex items-center justify-between">
-                    <div>
-                        <span class="font-medium text-stone-800">💡 提示：</span> 急症室以「分流制度」處理個案（危殆及危急病人優先診治），以下時間主要為次緊急及非緊急病人之參考輪候時間。
-                    </div>
-                    <span class="text-[11px] text-stone-400">數據來源：香港醫院管理局 (HA)</span>
-                </div>
-
-                <div class="overflow-x-auto">
-                    <table>
-                        <thead>
-                            <tr>
-                                <th style="width: 18%;">聯網</th>
-                                <th style="width: 38%;">醫院名稱</th>
-                                <th style="width: 24%;">預計等候時間</th>
-                                <th style="width: 20%;">輪候概況</th>
-                            </tr>
-                        </thead>
-                        <tbody id="erTableBody">
-                            <tr>
-                                <td colspan="4" style="text-align: center; padding: 25px; color: #888;">正在獲取最新公立醫院輪候數據...</td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-
-            <!-- 自願醫保保費查詢模組 -->
-            <div id="vhisSection" class="card">
-                <h2 class="section-title">自願醫保 (VHIS) 保費查詢與多公司對比</h2>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="age">受保人年齡 (0 - 100 歲):</label>
-                        <input type="number" id="age" min="0" max="100" value="35" placeholder="例如：35">
-                    </div>
-
-                    <div class="form-group">
-                        <label for="gender">性別:</label>
-                        <select id="gender">
-                            <option value="M">男 (Male)</option>
-                            <option value="F">女 (Female)</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="planType">計劃級別篩選:</label>
-                        <select id="planType">
-                            <option value="ALL">全部級別 (標準 + 靈活 + 高端)</option>
-                            <option value="STANDARD">只睇標準計劃 (Standard)</option>
-                            <option value="FLEXI">只睇靈活計劃 (Flexi)</option>
-                            <option value="HIGH_END">只睇高端醫療 (全數賠償)</option>
-                        </select>
-                    </div>
-                </div>
-
-                <div class="form-row">
-                    <div class="form-group">
-                        <label for="deductible">高端醫療墊底費 (自付費):</label>
-                        <select id="deductible">
-                            <option value="0">$0 (全數賠償，無墊底費)</option>
-                            <option value="15000">$15,000 墊底費</option>
-                            <option value="20000" selected>$20,000 墊底費 (最熱門)</option>
-                            <option value="50000">$50,000 墊底費</option>
-                            <option value="75000">$75,000 墊底費</option>
-                        </select>
-                    </div>
-
-                    <div class="form-group" style="flex: 2;">
-                        <label>勾選要比較的保險公司 (最多選 3 間)：</label>
-                        <div class="checkbox-container" id="companyCheckboxes"></div>
-                    </div>
-                </div>
-
-                <button class="btn-action" onclick="calculateVHIS()">立即進行保費列表對比</button>
-
-                <div id="resultsCard" style="display: none; margin-top: 30px;">
-                    <h3 style="color: var(--text-color); font-weight: 400; font-size: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
-                        保費列表對比結果 (<span id="displayAge"></span> 歲 / <span id="displayGender"></span>)
-                    </h3>
-                    <div class="comparison-results-grid" id="comparisonGrid"></div>
-                </div>
-            </div>
-
-            <!-- 扣稅三寶極速試算模組 -->
-            <div id="taxCalculatorSection" class="card hidden-section">
-                <div class="section-title">
-                    <span>2026/27 扣稅三寶極速試算器</span>
-                    <span class="text-xs text-stone-500">自訂保費金額，精準計算應繳稅款與慳稅空間</span>
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="form-group">
-                        <label for="monthly-income">每月平均薪金 (HKD)</label>
-                        <div class="input-wrapper">
-                            <span>$</span>
-                            <input type="number" id="monthly-income" class="input-with-symbol" placeholder="例：55000" inputmode="numeric">
+            <!-- 左右兩欄網格排版 -->
+            <div class="main-layout">
+                <!-- 左側固定選項表 (Sidebar) -->
+                <div class="sidebar-card">
+                    <h3>項目選擇</h3>
+                    <div class="radio-group-vertical">
+                        <label id="lbl-insuranceGroup">
+                            <input type="radio" name="mainMode" value="insuranceGroup" checked onchange="handleMainModeChange()"> 💼 保險與理財分析工具
+                        </label>
+                        
+                        <!-- 保險與理財分析底下的細分選擇 -->
+                        <div id="insuranceSubMenu" class="sub-menu-vertical">
+                            <label id="lbl-sub-vhis">
+                                <input type="radio" name="subMode" value="vhis" checked onchange="switchMode()"> 🛡️ 自願醫保保費查詢
+                            </label>
+                            <label id="lbl-sub-taxCalculator">
+                                <input type="radio" name="subMode" value="taxCalculator" onchange="switchMode()"> 🏛️ 扣稅三寶極速試算
+                            </label>
+                            <label id="lbl-sub-irrCalculator">
+                                <input type="radio" name="subMode" value="irrCalculator" onchange="switchMode()"> 💡 儲蓄保險與 IRR 比較
+                            </label>
+                            <label id="lbl-sub-insuranceAnalysis">
+                                <input type="radio" name="subMode" value="insuranceAnalysis" onchange="switchMode()"> 📊 保險與資產配置分析
+                            </label>
                         </div>
-                        <div class="helper-text">以 12 個月薪金計算（自動扣減強積金 MPF 5%）</div>
-                    </div>
 
-                    <div class="form-group">
-                        <label for="dependent-parents">供養父母人數（60 歲或以上）</label>
-                        <select id="dependent-parents">
-                            <option value="0">0 位</option>
-                            <option value="1">1 位</option>
-                            <option value="2">2 位</option>
-                            <option value="3">3 位或以上</option>
-                        </select>
-                        <div class="helper-text">每名父母享有免稅額與獨立醫保扣稅額</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="child-count">未成年子女數目</label>
-                        <select id="child-count">
-                            <option value="0">0 位</option>
-                            <option value="1">1 位</option>
-                            <option value="2">2 位</option>
-                            <option value="3">3 位</option>
-                        </select>
-                        <div class="helper-text">每名子女免稅額 HK$130,000</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label for="newborn-count">其中初生嬰兒</label>
-                        <select id="newborn-count">
-                            <option value="0">0 位</option>
-                        </select>
-                        <div class="helper-text">初生額外加 HK$130,000 免稅額</div>
+                        <label id="lbl-events">
+                            <input type="radio" name="mainMode" value="events" onchange="handleMainModeChange()"> 🎉 活動專區
+                        </label>
+                        <label id="lbl-wiki">
+                            <input type="radio" name="mainMode" value="wiki" onchange="handleMainModeChange()"> 📖 保險小百科與理賠須知
+                        </label>
+                        <label id="lbl-hospitalFees">
+                            <input type="radio" name="mainMode" value="hospitalFees" onchange="handleMainModeChange()"> 🏥 私家醫院房型收費表
+                        </label>
+                        <label id="lbl-quiz">
+                            <input type="radio" name="mainMode" value="quiz" onchange="handleMainModeChange()"> 🧠 財務健康小測驗
+                        </label>
+                        <label id="lbl-booking">
+                            <input type="radio" name="mainMode" value="booking" onchange="handleMainModeChange()"> 📅 一鍵預約諮詢
+                        </label>
+                        <label id="lbl-er">
+                            <input type="radio" name="mainMode" value="er" onchange="handleMainModeChange()"> 🏥 急症室即時輪候
+                        </label>
+                        <label id="lbl-disclaimer">
+                            <input type="radio" name="mainMode" value="disclaimer" onchange="handleMainModeChange()"> ⚖️ 免責聲明與私隱政策
+                        </label>
                     </div>
                 </div>
 
-                <div class="border-t border-dashed border-stone-200 pt-4 mt-2 mb-4">
-                    <h3 class="text-xs font-semibold text-stone-600 uppercase tracking-wider mb-3">⚙️ 自訂投保 / 供款金額（年繳）</h3>
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="form-group">
-                            <label for="vhis-amount">個人自願醫保 (VHIS) 年繳保費 (HKD)</label>
-                            <div class="input-wrapper">
-                                <span>$</span>
-                                <input type="number" id="vhis-amount" class="input-with-symbol" value="8000" placeholder="0" inputmode="numeric">
+                <!-- 右側內容顯示區 -->
+                <div class="content-area">
+                    <!-- 急症室即時輪候時間模組 -->
+                    <div id="erSection" class="card hidden-section">
+                        <div class="section-title">
+                            <span>公立醫院急症室即時輪候時間參考</span>
+                            <div class="flex items-center gap-3">
+                                <span class="refresh-info" id="updateTime">正在同步醫管局數據...</span>
+                                <button class="refresh-btn no-print" onclick="loadERData()">🔄 刷新數據</button>
                             </div>
-                            <div class="helper-text">法定每人每年扣除上限 HK$8,000</div>
                         </div>
 
-                        <div class="form-group">
-                            <label for="qdap-amount">延期年金 (QDAP) / TVC 年供款 (HKD)</label>
-                            <div class="input-wrapper">
-                                <span>$</span>
-                                <input type="number" id="qdap-amount" class="input-with-symbol" value="60000" placeholder="0" inputmode="numeric">
-                            </div>
-                            <div class="helper-text">法定每人每年扣除上限 HK$60,000</div>
-                        </div>
-
-                        <div class="form-group md:col-span-2" id="parent-vhis-group" style="display: none;">
-                            <label for="parents-vhis-amount">每名受養父母 VHIS 年繳保費 (HKD)</label>
-                            <div class="input-wrapper">
-                                <span>$</span>
-                                <input type="number" id="parents-vhis-amount" class="input-with-symbol" value="8000" placeholder="0" inputmode="numeric">
-                            </div>
-                            <div class="helper-text">每名父母額外每年享上限 HK$8,000 扣稅額</div>
-                        </div>
-                    </div>
-                </div>
-
-                <button type="button" class="btn-action" id="btn-submit-tax">即時計算交稅明細與節稅方案</button>
-
-                <div id="result-box" style="display: none; margin-top: 25px;">
-                    <div class="bg-stone-50 border border-stone-200 rounded-lg p-5 text-center mb-6">
-                        <div class="text-xs text-stone-500 mb-1">預計每年最高可慳稅款</div>
-                        <div class="text-3xl font-bold text-red-700" id="tax-saved">$0</div>
-                    </div>
-
-                    <div class="tax-table-container">
-                        <table class="tax-table">
-                            <thead>
-                                <tr>
-                                    <th>項目拆解</th>
-                                    <th class="text-right">扣稅前</th>
-                                    <th class="text-right">扣稅後</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>年度總入息</td>
-                                    <td class="text-right" id="tb-income-before">$0</td>
-                                    <td class="text-right" id="tb-income-after">$0</td>
-                                </tr>
-                                <tr>
-                                    <td>基本免稅額 + MPF</td>
-                                    <td class="text-right" id="tb-allowance-base">-$150,000</td>
-                                    <td class="text-right" id="tb-allowance-base-after">-$150,000</td>
-                                </tr>
-                                <tr>
-                                    <td>子女及初生免稅額</td>
-                                    <td class="text-right" id="tb-allowance-child">-$0</td>
-                                    <td class="text-right" id="tb-allowance-child-after">-$0</td>
-                                </tr>
-                                <tr>
-                                    <td>扣稅三寶實質扣除額</td>
-                                    <td class="text-right">$0</td>
-                                    <td class="text-right" id="tb-deduction-quota">-$0</td>
-                                </tr>
-                                <tr>
-                                    <td>應課稅入息實額</td>
-                                    <td class="text-right" id="tb-net-before">$0</td>
-                                    <td class="text-right" id="tb-net-after">$0</td>
-                                </tr>
-                                <tr class="row-highlight">
-                                    <td>預計應繳薪俸稅</td>
-                                    <td class="text-right" id="tb-tax-before">$0</td>
-                                    <td class="text-right" id="tb-tax-after">$0</td>
-                                </tr>
-                                <tr class="row-save">
-                                    <td colspan="2">🔥 實際少交稅款（慳稅金額）</td>
-                                    <td class="text-right" id="tb-diff-saved">$0</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
-
-                    <div class="text-sm font-semibold text-stone-800 mt-6 mb-3">💡 針對您所填金額的專屬配置方案</div>
-                    <div id="plans-container"></div>
-                </div>
-            </div>
-
-            <!-- 活動專區模組 (Events Section - 即將推出) -->
-            <div id="eventsSection" class="card hidden-section">
-                <div class="section-title">
-                    <span>🎉 活動專區</span>
-                    <span class="text-xs text-stone-500">掌握最新醫療與理財講座資訊</span>
-                </div>
-
-                <div class="text-center py-16 px-4">
-                    <div class="text-4xl mb-3">🚀</div>
-                    <h3 class="text-lg font-medium text-stone-800 mb-2">精彩活動，即將推出</h3>
-                    <p class="text-xs text-stone-500 max-w-sm mx-auto mb-6">
-                        我們正密鑼緊鼓籌備一系列實用的理財、稅務與醫療講座，敬請期待！
-                    </p>
-                    <a href="https://wa.me/85290000000?text=你好！我想查詢最新活動開辦日期" target="_blank" class="inline-block bg-stone-800 text-white text-xs font-medium px-6 py-2.5 rounded-full hover:bg-stone-900 transition shadow-sm">
-                        📲 透過 WhatsApp 查詢最新動態
-                    </a>
-                </div>
-            </div>
-
-            <!-- 保險與資產配置分析模組 -->
-            <div id="insuranceAnalysisSection" class="card hidden-section">
-                <div id="printReportTitle" class="print-report-title">專業保險與資產配置分析報告</div>
-
-                <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
-                    <div class="lg:col-span-7 bg-[#fffefc] rounded-xl shadow-sm border border-stone-200 p-6 space-y-6 no-print">
-                        <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
-                            <span class="w-2 h-2 rounded-full bg-stone-700"></span>
-                            <h2 class="text-sm font-medium tracking-wide text-stone-850 serif-title">一、 客戶與保單資料</h2>
-                        </div>
-
-                        <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-stone-50 border border-stone-200 rounded-lg p-3 text-xs text-stone-600 mb-4 flex items-center justify-between">
                             <div>
-                                <label class="block text-[11px] font-medium text-stone-500 mb-1">客戶姓名</label>
-                                <input type="text" id="insClientName" value="" placeholder="請輸入姓名" oninput="updatePrintTitle()" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-stone-500">
+                                <span class="font-medium text-stone-800">💡 提示：</span> 急症室以「分流制度」處理個案（危殆及危急病人優先診治），以下時間主要為次緊急及非緊急病人之參考輪候時間。
                             </div>
-                            <div>
-                                <label class="block text-[11px] font-medium text-stone-500 mb-1">性別</label>
-                                <select id="insClientGender" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-stone-500">
-                                    <option value="男">男</option>
-                                    <option value="女">女</option>
+                            <span class="text-[11px] text-stone-400">數據來源：香港醫院管理局 (HA)</span>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 18%;">聯網</th>
+                                        <th style="width: 38%;">醫院名稱</th>
+                                        <th style="width: 24%;">預計等候時間</th>
+                                        <th style="width: 20%;">輪候概況</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="erTableBody">
+                                    <tr>
+                                        <td colspan="4" style="text-align: center; padding: 25px; color: #888;">正在獲取最新公立醫院輪候數據...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 全港私家醫院房型收費表及總機電話模組 -->
+                    <div id="hospitalFeesSection" class="card hidden-section">
+                        <div class="section-title">
+                            <span>🏥 全港私家醫院病房收費與總機電話參考表 (2026 最新)</span>
+                            <span class="text-xs text-stone-500">數據來源：各大私家醫院官方收費表</span>
+                        </div>
+
+                        <div class="bg-stone-50 border border-stone-200 rounded-lg p-3 text-xs text-stone-600 mb-4">
+                            💡 <strong>提示：</strong> 以下為各主要私家醫院之每日房費參考（港幣 HKD）及官方總機電話。實際收費或因病房位置、加床或通脹調整而異。
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th style="width: 28%;">私家醫院名稱</th>
+                                        <th style="width: 18%;">總機電話</th>
+                                        <th style="width: 18%;">標準房 (每日)</th>
+                                        <th style="width: 18%;">半私家房 (每日)</th>
+                                        <th style="width: 18%;">私家房 (每日)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td><strong>養和醫院</strong></td>
+                                        <td><a href="tel:25720211" class="text-blue-600 hover:underline">2572 0211</a></td>
+                                        <td>$1,400 – $2,020</td>
+                                        <td>$3,030 – $4,030</td>
+                                        <td>$4,850 – $23,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>港怡醫院</strong></td>
+                                        <td><a href="tel:31539000" class="text-blue-600 hover:underline">3153 9000</a></td>
+                                        <td>$1,000 – $1,200</td>
+                                        <td>$2,100 – $2,300</td>
+                                        <td>$4,600 – $10,800</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>香港浸信會醫院</strong></td>
+                                        <td><a href="tel:23398888" class="text-blue-600 hover:underline">2339 8888</a></td>
+                                        <td>$850 – $1,020</td>
+                                        <td>$1,900 – $2,800</td>
+                                        <td>$3,880 – $4,880</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>仁安醫院</strong></td>
+                                        <td><a href="tel:26083388" class="text-blue-600 hover:underline">2608 3388</a></td>
+                                        <td>$600 – $950</td>
+                                        <td>$1,080 – $2,300</td>
+                                        <td>$2,500 – $8,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>聖保祿醫院</strong></td>
+                                        <td><a href="tel:28308888" class="text-blue-600 hover:underline">2830 8888</a></td>
+                                        <td>$760 – $900</td>
+                                        <td>$1,380 – $1,480</td>
+                                        <td>$3,800 – $11,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>明德國際醫院</strong></td>
+                                        <td><a href="tel:28490111" class="text-blue-600 hover:underline">2849 0111</a></td>
+                                        <td>$1,100</td>
+                                        <td>$2,300</td>
+                                        <td>$4,500</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>香港港安醫院 (司徒拔道)</strong></td>
+                                        <td><a href="tel:36518888" class="text-blue-600 hover:underline">3651 8888</a></td>
+                                        <td>$900</td>
+                                        <td>$2,300 – $2,800</td>
+                                        <td>$3,400 – $9,000</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>荃灣港安醫院</strong></td>
+                                        <td><a href="tel:22766688" class="text-blue-600 hover:underline">2276 6688</a></td>
+                                        <td>$1,000 – $1,050</td>
+                                        <td>$1,250 – $2,200</td>
+                                        <td>$3,500</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>香港中文大學醫院</strong></td>
+                                        <td><a href="tel:39466888" class="text-blue-600 hover:underline">3946 6888</a></td>
+                                        <td>$1,000</td>
+                                        <td>$1,500 – $2,500</td>
+                                        <td>$3,600 – $4,800</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>聖德肋撒醫院 (法國)</strong></td>
+                                        <td><a href="tel:22003434" class="text-blue-600 hover:underline">2200 3434</a></td>
+                                        <td>$630 – $800</td>
+                                        <td>$1,000 – $1,750</td>
+                                        <td>$2,100 – $15,300</td>
+                                    </tr>
+                                    <tr>
+                                        <td><strong>嘉諾撒醫院</strong></td>
+                                        <td><a href="tel:25222181" class="text-blue-600 hover:underline">2522 2181</a></td>
+                                        <td>$800 – $1,100</td>
+                                        <td>$2,600</td>
+                                        <td>$4,200</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- 財務健康小測驗 (Quiz) -->
+                    <div id="quizSection" class="card hidden-section">
+                        <div class="section-title">
+                            <span>🧠 財務健康指數小測驗</span>
+                            <span class="text-xs text-stone-500">3 條問題快速評估您的個人財務防線</span>
+                        </div>
+                        <div class="max-w-lg mx-auto bg-stone-50 p-6 rounded-xl border border-stone-200 mt-4">
+                            <div id="quizContainer">
+                                <div class="mb-4">
+                                    <p class="text-xs font-bold text-stone-800 mb-2">Q1: 您目前是否有儲備足夠 3 至 6 個月生活費的「緊急預備金」？</p>
+                                    <label class="block text-xs text-stone-600 mb-1"><input type="radio" name="q1" value="3" class="mr-2"> 有，完全充足</label>
+                                    <label class="block text-xs text-stone-600 mb-1"><input type="radio" name="q1" value="1" class="mr-2"> 有一點，但不太夠</label>
+                                    <label class="block text-xs text-stone-600 mb-1"><input type="radio" name="q1" value="0" class="mr-2"> 完全沒有</label>
+                                </div>
+                                <div class="mb-4">
+                                    <p class="text-xs font-bold text-stone-800 mb-2">Q2: 若不幸罹患嚴重疾病（如癌症），您現有的醫療保險是否足以應付私家醫院全數開支？</p>
+                                    <label class="block text-xs text-stone-600 mb-1"><input type="radio" name="q2" value="3" class="mr-2"> 有高端醫療/全數賠償醫保</label>
+                                    <label class="block text-xs text-stone-600 mb-1"><input type="radio" name="q2" value="1" class="mr-2"> 只有公司團體保險或基本住院保</label>
+                                    <label class="block text-xs text-stone-600 mb-1"><input type="radio" name="q2" value="0" class="mr-2"> 沒有任何私人醫療保險</label>
+                                </div>
+                                <div class="mb-4">
+                                    <p class="text-xs font-bold text-stone-800 mb-2">Q3: 您是否已每年善用扣稅三寶（VHIS、QDAP、TVC）來規劃慳稅與退休？</p>
+                                    <label class="block text-xs text-stone-600 mb-1"><input type="radio" name="q3" value="3" class="mr-2"> 有，每年按上限配置</label>
+                                    <label class="block text-xs text-stone-600 mb-1"><input type="radio" name="q3" value="1" class="mr-2"> 略有了解，但未全面配置</label>
+                                    <label class="block text-xs text-stone-600 mb-1"><input type="radio" name="q3" value="0" class="mr-2"> 從未關注</label>
+                                </div>
+                                <button onclick="calculateQuizScore()" class="btn-action text-xs py-2.5">查看我的財務健康評分</button>
+                            </div>
+                            <div id="quizResult" class="hidden text-center py-4">
+                                <h4 class="text-base font-bold text-stone-800 mb-2" id="quizScoreTitle"></h4>
+                                <p class="text-xs text-stone-600 mb-4" id="quizScoreDesc"></p>
+                                <a href="https://wa.me/85260203169?text=你好！我剛剛做了財務健康小測驗，想預約專家作進一步諮詢。" target="_blank" class="inline-block bg-[#25D366] text-white text-xs font-medium px-5 py-2.5 rounded-lg">📲 透過 WhatsApp 預約專業諮詢</a>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 一鍵預約諮詢 -->
+                    <div id="bookingSection" class="card hidden-section">
+                        <div class="section-title">
+                            <span>📅 一鍵預約專屬理財與醫療諮詢</span>
+                            <span class="text-xs text-stone-500">選擇您偏好的諮詢時段，我們將透過 WhatsApp 與您確認</span>
+                        </div>
+                        <div class="max-w-md mx-auto bg-stone-50 p-6 rounded-xl border border-stone-200 mt-4">
+                            <form onsubmit="submitBooking(event)">
+                                <div class="mb-3">
+                                    <label class="block text-xs font-semibold text-stone-600 mb-1">您的姓名 *</label>
+                                    <input type="text" id="bookName" required placeholder="例如：陳大文" class="w-full border border-stone-200 rounded p-2 text-xs">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="block text-xs font-semibold text-stone-600 mb-1">聯絡電話 (WhatsApp) *</label>
+                                    <input type="text" id="bookPhone" required placeholder="例如：60203169" class="w-full border border-stone-200 rounded p-2 text-xs">
+                                </div>
+                                <div class="mb-3">
+                                    <label class="block text-xs font-semibold text-stone-600 mb-1">選擇諮詢主題</label>
+                                    <select id="bookTopic" class="w-full border border-stone-200 rounded p-2 text-xs">
+                                        <option value="自願醫保及扣稅規劃">自願醫保及扣稅規劃</option>
+                                        <option value="儲蓄保險與IRR對比">儲蓄保險與 IRR 比較</option>
+                                        <option value="保單檢視與保障缺口分析">保單檢視與保障缺口分析</option>
+                                        <option value="全面資產配置與退休規劃">全面資產配置與退休規劃</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label class="block text-xs font-semibold text-stone-600 mb-1">希望諮詢日期與時段 *</label>
+                                    <input type="datetime-local" id="bookDatetime" required class="w-full border border-stone-200 rounded p-2 text-xs">
+                                </div>
+                                <button type="submit" class="btn-action text-xs py-2.5">確認預約並發送至 WhatsApp</button>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- 自願醫保保費查詢模組 -->
+                    <div id="vhisSection" class="card">
+                        <h2 class="section-title">自願醫保 (VHIS) 保費查詢與多公司對比</h2>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="age">受保人年齡 (0 - 100 歲):</label>
+                                <input type="number" id="age" min="0" max="100" value="35" placeholder="例如：35">
+                            </div>
+
+                            <div class="form-group">
+                                <label for="gender">性別:</label>
+                                <select id="gender">
+                                    <option value="M">男 (Male)</option>
+                                    <option value="F">女 (Female)</option>
                                 </select>
                             </div>
-                            <div>
-                                <label class="block text-[11px] font-medium text-stone-500 mb-1">出生日期 (自動計年齡)</label>
-                                <input type="date" id="insClientDOB" onchange="calculateInsuranceAge()" class="w-full px-2 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-stone-500">
+
+                            <div class="form-group">
+                                <label for="planType">計劃級別篩選:</label>
+                                <select id="planType">
+                                    <option value="ALL">全部級別 (標準 + 靈活 + 高端)</option>
+                                    <option value="STANDARD">只睇標準計劃 (Standard)</option>
+                                    <option value="FLEXI">只睇靈活計劃 (Flexi)</option>
+                                    <option value="HIGH_END">只睇高端醫療 (全數賠償)</option>
+                                </select>
                             </div>
                         </div>
 
-                        <div class="space-y-3">
-                            <div class="flex justify-between items-center">
-                                <h3 class="text-[11px] font-medium text-stone-500 uppercase tracking-wider">現有保單 / MPF 明細</h3>
-                                <button type="button" onclick="addInsurancePolicyRow()" class="text-stone-700 bg-stone-100 hover:bg-stone-200 text-[11px] font-medium px-3 py-1.5 rounded-lg transition-colors">
-                                    + 新增保單/MPF
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="deductible">高端醫療墊底費 (自付費):</label>
+                                <select id="deductible">
+                                    <option value="0">$0 (全數賠償，無墊底費)</option>
+                                    <option value="15000">$15,000 墊底費</option>
+                                    <option value="20000" selected>$20,000 墊底費 (最熱門)</option>
+                                    <option value="50000">$50,000 墊底費</option>
+                                    <option value="75000">$75,000 墊底費</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group" style="flex: 2;">
+                                <label>勾選要比較的保險公司 (最多選 3 間)：</label>
+                                <div class="checkbox-container" id="companyCheckboxes"></div>
+                            </div>
+                        </div>
+
+                        <button class="btn-action" onclick="calculateVHIS()">立即進行保費列表對比</button>
+
+                        <div id="resultsCard" style="display: none; margin-top: 30px;">
+                            <h3 style="color: var(--text-color); font-weight: 400; font-size: 16px; border-bottom: 1px solid var(--border-color); padding-bottom: 10px;">
+                                保費列表對比結果 (<span id="displayAge"></span> 歲 / <span id="displayGender"></span>)
+                            </h3>
+                            <div class="comparison-results-grid" id="comparisonGrid"></div>
+                        </div>
+                    </div>
+
+                    <!-- 扣稅三寶極速試算模組 -->
+                    <div id="taxCalculatorSection" class="card hidden-section">
+                        <div class="section-title">
+                            <span>2026/27 扣稅三寶極速試算器</span>
+                            <span class="text-xs text-stone-500">自訂保費金額，精準計算應繳稅款與慳稅空間</span>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div class="form-group">
+                                <label for="monthly-income">每月平均薪金 (HKD)</label>
+                                <div class="input-wrapper">
+                                    <span>$</span>
+                                    <input type="number" id="monthly-income" class="input-with-symbol" placeholder="例：55000" inputmode="numeric">
+                                </div>
+                                <div class="helper-text">以 12 個月薪金計算（自動扣減強積金 MPF 5%）</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="dependent-parents">供養父母人數（60 歲或以上）</label>
+                                <select id="dependent-parents">
+                                    <option value="0">0 位</option>
+                                    <option value="1">1 位</option>
+                                    <option value="2">2 位</option>
+                                    <option value="3">3 位或以上</option>
+                                </select>
+                                <div class="helper-text">每名父母享有免稅額與獨立醫保扣稅額</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="child-count">未成年子女數目</label>
+                                <select id="child-count">
+                                    <option value="0">0 位</option>
+                                    <option value="1">1 位</option>
+                                    <option value="2">2 位</option>
+                                    <option value="3">3 位</option>
+                                </select>
+                                <div class="helper-text">每名子女免稅額 HK$130,000</div>
+                            </div>
+
+                            <div class="form-group">
+                                <label for="newborn-count">其中初生嬰兒</label>
+                                <select id="newborn-count">
+                                    <option value="0">0 位</option>
+                                </select>
+                                <div class="helper-text">初生額外加 HK$130,000 免稅額</div>
+                            </div>
+                        </div>
+
+                        <div class="border-t border-dashed border-stone-200 pt-4 mt-2 mb-4">
+                            <h3 class="text-xs font-semibold text-stone-600 uppercase tracking-wider mb-3">⚙️ 自訂投保 / 供款金額（年繳）</h3>
+                            
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="form-group">
+                                    <label for="vhis-amount">個人自願醫保 (VHIS) 年繳保費 (HKD)</label>
+                                    <div class="input-wrapper">
+                                        <span>$</span>
+                                        <input type="number" id="vhis-amount" class="input-with-symbol" value="8000" placeholder="0" inputmode="numeric">
+                                    </div>
+                                    <div class="helper-text">法定每人每年扣除上限 HK$8,000</div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="qdap-amount">延期年金 (QDAP) / TVC 年供款 (HKD)</label>
+                                    <div class="input-wrapper">
+                                        <span>$</span>
+                                        <input type="number" id="qdap-amount" class="input-with-symbol" value="60000" placeholder="0" inputmode="numeric">
+                                    </div>
+                                    <div class="helper-text">法定每人每年扣除上限 HK$60,000</div>
+                                </div>
+
+                                <div class="form-group md:col-span-2" id="parent-vhis-group" style="display: none;">
+                                    <label for="parents-vhis-amount">每名受養父母 VHIS 年繳保費 (HKD)</label>
+                                    <div class="input-wrapper">
+                                        <span>$</span>
+                                        <input type="number" id="parents-vhis-amount" class="input-with-symbol" value="8000" placeholder="0" inputmode="numeric">
+                                    </div>
+                                    <div class="helper-text">每名父母額外每年享上限 HK$8,000 扣稅額</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button type="button" class="btn-action" id="btn-submit-tax">即時計算交稅明細與節稅方案</button>
+
+                        <div id="result-box" style="display: none; margin-top: 25px;">
+                            <div class="bg-stone-50 border border-stone-200 rounded-lg p-5 text-center mb-6">
+                                <div class="text-xs text-stone-500 mb-1">預計每年最高可慳稅款</div>
+                                <div class="text-3xl font-bold text-red-700" id="tax-saved">$0</div>
+                            </div>
+
+                            <div class="tax-table-container">
+                                <table class="tax-table">
+                                    <thead>
+                                        <tr>
+                                            <th>項目拆解</th>
+                                            <th class="text-right">扣稅前</th>
+                                            <th class="text-right">扣稅後</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>年度總入息</td>
+                                            <td class="text-right" id="tb-income-before">$0</td>
+                                            <td class="text-right" id="tb-income-after">$0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>基本免稅額 + MPF</td>
+                                            <td class="text-right" id="tb-allowance-base">-$150,000</td>
+                                            <td class="text-right" id="tb-allowance-base-after">-$150,000</td>
+                                        </tr>
+                                        <tr>
+                                            <td>子女及初生免稅額</td>
+                                            <td class="text-right" id="tb-allowance-child">-$0</td>
+                                            <td class="text-right" id="tb-allowance-child-after">-$0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>扣稅三寶實質扣除額</td>
+                                            <td class="text-right">$0</td>
+                                            <td class="text-right" id="tb-deduction-quota">-$0</td>
+                                        </tr>
+                                        <tr>
+                                            <td>應課稅入息實額</td>
+                                            <td class="text-right" id="tb-net-before">$0</td>
+                                            <td class="text-right" id="tb-net-after">$0</td>
+                                        </tr>
+                                        <tr class="row-highlight">
+                                            <td>預計應繳薪俸稅</td>
+                                            <td class="text-right" id="tb-tax-before">$0</td>
+                                            <td class="text-right" id="tb-tax-after">$0</td>
+                                        </tr>
+                                        <tr class="row-save">
+                                            <td colspan="2">🔥 實際少交稅款（慳稅金額）</td>
+                                            <td class="text-right" id="tb-diff-saved">$0</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="text-sm font-semibold text-stone-800 mt-6 mb-3">💡 針對您所填金額的專屬配置方案</div>
+                            <div id="plans-container"></div>
+                        </div>
+                    </div>
+
+                    <!-- 活動專區模組 (Events Section) -->
+                    <div id="eventsSection" class="card hidden-section">
+                        <div class="section-title">
+                            <span>🎉 活動專區</span>
+                            <span class="text-xs text-stone-500">掌握最新醫療與理財講座資訊</span>
+                        </div>
+
+                        <div class="text-center py-16 px-4">
+                            <div class="text-4xl mb-3">🚀</div>
+                            <h3 class="text-lg font-medium text-stone-800 mb-2">精彩活動，即將推出</h3>
+                            <p class="text-xs text-stone-500 max-w-sm mx-auto mb-6">
+                                我們正密鑼緊鼓籌備一系列實用的理財、稅務與醫療講座，敬請期待！
+                            </p>
+                            <a href="https://wa.me/85260203169?text=你好！我想查詢最新活動開辦日期" target="_blank" class="inline-block bg-stone-800 text-white text-xs font-medium px-6 py-2.5 rounded-full hover:bg-stone-900 transition shadow-sm">
+                                📲 透過 WhatsApp 查詢最新動態
+                            </a>
+                        </div>
+                    </div>
+
+                    <!-- 保險小百科與理賠須知專區 (Wiki Section) -->
+                    <div id="wikiSection" class="card hidden-section">
+                        <div class="section-title">
+                            <span>📖 保險小百科與理賠須知</span>
+                            <span class="text-xs text-stone-500">專業解析保險觀念與索償要點</span>
+                        </div>
+
+                        <div class="bg-stone-50 border border-stone-200 rounded-lg p-4 mb-6 flex flex-col sm:flex-row items-center justify-between gap-3">
+                            <div class="text-xs text-stone-700">
+                                <span class="font-bold text-stone-900">🔗 官方醫療收費參考：</span> 查閱公立醫院及診所各項服務收費詳情
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <a href="https://www3.ha.org.hk/fnc/Operations.aspx?lang=CHIB5" target="_blank" class="bg-white border border-stone-300 text-stone-700 hover:border-blue-600 hover:text-blue-600 px-3 py-1.5 rounded text-xs font-medium transition shadow-sm">
+                                    中文收費參考[cite: 1]
+                                </a>
+                                <a href="https://www3.ha.org.hk/fnc/Operations.aspx?lang=ENG" target="_blank" class="bg-white border border-stone-300 text-stone-700 hover:border-blue-600 hover:text-blue-600 px-3 py-1.5 rounded text-xs font-medium transition shadow-sm">
+                                    English Fees & Charges[cite: 1]
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-4">
+                            <div class="company-card-item">
+                                <h4>自願醫保 (VHIS) 須知</h4>
+                                <ul class="plan-detail-list">
+                                    <li><span class="label">保障範圍</span> <span class="value">標準與靈活計劃</span></li>
+                                    <li><span class="label">扣稅額上限</span> <span class="value">每人每年 $8,000</span></li>
+                                </ul>
+                            </div>
+                            <div class="company-card-item">
+                                <h4>理賠免找數申請</h4>
+                                <ul class="plan-detail-list">
+                                    <li><span class="label">建議時間</span> <span class="value">術前 3-5 天</span></li>
+                                    <li><span class="label">預先批核</span> <span class="value">免除大筆墊支</span></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 保險與資產配置分析模組 -->
+                    <div id="insuranceAnalysisSection" class="card hidden-section">
+                        <div id="printReportTitle" class="print-report-title">專業保險與資產配置分析報告</div>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+                            <div class="lg:col-span-7 bg-[#fffefc] rounded-xl shadow-sm border border-stone-200 p-6 space-y-6 no-print">
+                                <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
+                                    <span class="w-2 h-2 rounded-full bg-stone-700"></span>
+                                    <h2 class="text-sm font-medium tracking-wide text-stone-850 serif-title">一、 客戶與保單資料</h2>
+                                </div>
+
+                                <div class="grid grid-cols-3 gap-3">
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-stone-500 mb-1">客戶姓名</label>
+                                        <input type="text" id="insClientName" value="" placeholder="請輸入姓名" oninput="updatePrintTitle()" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-stone-500">
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-stone-500 mb-1">性別</label>
+                                        <select id="insClientGender" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-stone-500">
+                                            <option value="男">男</option>
+                                            <option value="女">女</option>
+                                        </select>
+                                    </div>
+                                    <div>
+                                        <label class="block text-[11px] font-medium text-stone-500 mb-1">出生日期 (自動計年齡)</label>
+                                        <input type="date" id="insClientDOB" onchange="calculateInsuranceAge()" class="w-full px-2 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none focus:border-stone-500">
+                                    </div>
+                                </div>
+
+                                <div class="space-y-3">
+                                    <div class="flex justify-between items-center">
+                                        <h3 class="text-[11px] font-medium text-stone-500 uppercase tracking-wider">現有保單 / MPF 明細</h3>
+                                        <button type="button" onclick="addInsurancePolicyRow()" class="text-stone-700 bg-stone-100 hover:bg-stone-200 text-[11px] font-medium px-3 py-1.5 rounded-lg transition-colors">
+                                            + 新增保單/MPF
+                                        </button>
+                                    </div>
+
+                                    <div id="insPoliciesContainer" class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
+                                        <div class="policy-item bg-[#f9f8f6] border border-stone-200 p-4 rounded-xl relative space-y-3">
+                                            <button type="button" onclick="removeInsurancePolicyRow(this)" class="absolute top-3 right-3 text-stone-400 hover:text-red-500 text-xs">✕</button>
+                                            
+                                            <div class="grid grid-cols-2 gap-3">
+                                                <div>
+                                                    <label class="block text-[10px] text-stone-500 mb-1">機構 / 保險公司</label>
+                                                    <input type="text" placeholder="例如：友邦保險 / 永明金融" class="policy-company w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[10px] text-stone-500 mb-1">保單號碼 / 帳戶編號</label>
+                                                    <input type="text" placeholder="例如：POL-001" class="policy-number w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                                                </div>
+                                            </div>
+
+                                            <div class="grid grid-cols-3 gap-3">
+                                                <div>
+                                                    <label class="block text-[10px] text-stone-500 mb-1">保障/資產類型</label>
+                                                    <select class="policy-type w-full px-2 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                                                        <option value="life">人壽保險</option>
+                                                        <option value="ci">危疾保險</option>
+                                                        <option value="accident">意外保險</option>
+                                                        <option value="medical">醫療保險</option>
+                                                        <option value="savings">儲蓄/年金 (退休)</option>
+                                                        <option value="mpf">MPF 強積金 (退休)</option>
+                                                    </select>
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[10px] text-stone-500 mb-1">保額 / 權益總值 (HKD)</label>
+                                                    <input type="number" placeholder="0" class="policy-suminsured w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                                                </div>
+                                                <div>
+                                                    <div class="flex justify-between items-center mb-1">
+                                                        <label class="text-[10px] text-stone-500">供款金額 (HKD)</label>
+                                                        <select class="policy-freq text-[9px] bg-stone-100 border border-stone-200 rounded px-1 text-stone-600 focus:outline-none">
+                                                            <option value="year">每年</option>
+                                                            <option value="month">每月</option>
+                                                        </select>
+                                                    </div>
+                                                    <input type="number" placeholder="0" class="policy-premium w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                                                </div>
+                                            </div>
+
+                                            <div class="grid grid-cols-4 gap-2 pt-2 border-t border-stone-200">
+                                                <div>
+                                                    <label class="block text-[9px] text-stone-400">生效日期</label>
+                                                    <input type="date" onchange="autoCalcInsuranceEndDate(this)" class="policy-startdate w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[9px] text-stone-400">供款年期</label>
+                                                    <input type="number" placeholder="0" onchange="autoCalcInsuranceEndDate(this)" class="policy-term w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[9px] text-stone-400">現金價值 / 結餘</label>
+                                                    <input type="number" placeholder="0" class="policy-cashvalue w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                                                </div>
+                                                <div>
+                                                    <label class="block text-[9px] text-stone-400">到期日 (自動)</label>
+                                                    <input type="date" class="policy-enddate w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-3 pt-2">
+                                    <div class="flex items-center space-x-2 border-b border-stone-100 pb-2">
+                                        <span class="w-2 h-2 rounded-full bg-stone-700"></span>
+                                        <h2 class="text-sm font-medium tracking-wide text-stone-850 serif-title">二、 理想保障目標</h2>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-3">
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-stone-500 mb-1">目標人壽保額</label>
+                                            <input type="number" id="insTargetLife" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-stone-500 mb-1">目標危疾保額</label>
+                                            <input type="number" id="insTargetCI" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-stone-500 mb-1">目標意外保額</label>
+                                            <input type="number" id="insTargetAccident" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
+                                        </div>
+                                        <div>
+                                            <label class="block text-[11px] font-medium text-stone-500 mb-1">目標退休金儲蓄</label>
+                                            <input type="number" id="insTargetRetirement" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <button type="button" onclick="calculateInsuranceSummary()" class="w-full bg-stone-800 hover:bg-stone-900 text-stone-100 font-medium py-3 rounded-xl transition-colors text-xs tracking-widest uppercase">
+                                    計算保障分析
                                 </button>
                             </div>
 
-                            <div id="insPoliciesContainer" class="space-y-3 max-h-[380px] overflow-y-auto pr-1">
-                                <div class="policy-item bg-[#f9f8f6] border border-stone-200 p-4 rounded-xl relative space-y-3">
-                                    <button type="button" onclick="removeInsurancePolicyRow(this)" class="absolute top-3 right-3 text-stone-400 hover:text-red-500 text-xs">✕</button>
-                                    
-                                    <div class="grid grid-cols-2 gap-3">
-                                        <div>
-                                            <label class="block text-[10px] text-stone-500 mb-1">機構 / 保險公司</label>
-                                            <input type="text" placeholder="例如：友邦保險 / 永明金融" class="policy-company w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
-                                        </div>
-                                        <div>
-                                            <label class="block text-[10px] text-stone-500 mb-1">保單號碼 / 帳戶編號</label>
-                                            <input type="text" placeholder="例如：POL-001" class="policy-number w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                            <div class="lg:col-span-5 bg-[#fffefc] rounded-xl shadow-sm border border-stone-200 p-6 flex flex-col justify-between space-y-6">
+                                <div class="space-y-4">
+                                    <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
+                                        <span class="w-2 h-2 rounded-full bg-stone-700"></span>
+                                        <h2 class="text-sm font-medium tracking-wide text-stone-850 serif-title">三、 缺口與資產總結</h2>
+                                    </div>
+
+                                    <div class="bg-[#f9f8f6] p-4 rounded-xl border border-stone-200/60 space-y-1.5 text-xs">
+                                        <p class="font-medium text-stone-800" id="insSummaryHeader">客戶：<span class="font-semibold text-stone-900">未填寫</span> (性別：- | 年齡：-)</p>
+                                        <p class="text-stone-500">有效保單/MPF數：<span id="insDispPolicyCount" class="font-medium text-stone-800">0</span> 份</p>
+                                        <p class="text-stone-500">供款支出：<span id="insDispMonthlyPremium" class="font-medium text-stone-800">HK$0 /月</span> (年繳: <span id="insDispAnnualPremium" class="font-medium text-stone-800">HK$0</span>)</p>
+                                        <p class="text-stone-500">保單現金價值總額：<span id="insDispCashValue" class="font-medium text-stone-800">HK$0</span></p>
+                                        <p class="text-stone-500">MPF 強積金結餘總額：<span id="insDispMpfValue" class="font-medium text-stone-800">HK$0</span></p>
+                                        <p class="text-stone-500 font-semibold text-stone-700 pt-1 border-t border-stone-200/60">總資產結餘 (現金價值 + MPF)：<span id="insDispTotalCashValue" class="font-bold text-stone-900">HK$0</span></p>
+                                    </div>
+
+                                    <div>
+                                        <h4 class="font-medium text-stone-700 mb-1.5 text-[11px] uppercase tracking-wider">現有保單與 MPF 明細清單</h4>
+                                        <div id="insPolicyListSummary" class="space-y-1.5 max-h-28 overflow-y-auto pr-1 text-stone-500 text-[11px]">
+                                            尚未新增任何保單或 MPF
                                         </div>
                                     </div>
 
-                                    <div class="grid grid-cols-3 gap-3">
-                                        <div>
-                                            <label class="block text-[10px] text-stone-500 mb-1">保障/資產類型</label>
-                                            <select class="policy-type w-full px-2 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
-                                                <option value="life">人壽保險</option>
-                                                <option value="ci">危疾保險</option>
-                                                <option value="accident">意外保險</option>
-                                                <option value="medical">醫療保險</option>
-                                                <option value="savings">儲蓄/年金 (退休)</option>
-                                                <option value="mpf">MPF 強積金 (退休)</option>
-                                            </select>
+                                    <div class="space-y-2">
+                                        <div class="flex justify-between text-xs py-1 border-b border-stone-100">
+                                            <span class="text-stone-500">人壽保障缺口</span>
+                                            <span id="insLifeGapText" class="font-semibold text-stone-800">HK$ 0</span>
                                         </div>
-                                        <div>
-                                            <label class="block text-[10px] text-stone-500 mb-1">保額 / 權益總值 (HKD)</label>
-                                            <input type="number" placeholder="0" class="policy-suminsured w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
+                                        <div class="flex justify-between text-xs py-1 border-b border-stone-100">
+                                            <span class="text-stone-500">危疾保障缺口</span>
+                                            <span id="insCiGapText" class="font-semibold text-stone-800">HK$ 0</span>
                                         </div>
+                                        <div class="flex justify-between text-xs py-1 border-b border-stone-100">
+                                            <span class="text-stone-500">意外保障缺口</span>
+                                            <span id="insAccidentGapText" class="font-semibold text-stone-800">HK$ 0</span>
+                                        </div>
+                                        <div class="flex justify-between text-xs py-1 border-b border-stone-100">
+                                            <span class="text-stone-500">退休金儲蓄缺口</span>
+                                            <span id="insRetirementGapText" class="font-semibold text-stone-800">HK$ 0</span>
+                                        </div>
+                                    </div>
+
+                                    <div class="relative h-40 w-full flex items-center justify-center pt-2">
+                                        <canvas id="insGapChart"></canvas>
+                                    </div>
+                                </div>
+
+                                <div class="space-y-2 no-print">
+                                    <button onclick="exportInsurancePDF()" class="w-full bg-stone-800 hover:bg-stone-900 text-stone-100 font-medium py-3 rounded-xl transition-colors text-xs tracking-wider flex items-center justify-center space-x-2">
+                                        <span>📄 匯出 PDF 分析報告</span>
+                                    </button>
+                                    <button onclick="copyInsuranceWhatsAppReport()" class="w-full bg-stone-100 hover:bg-stone-200 text-stone-800 font-medium py-2.5 rounded-xl transition-colors text-xs tracking-wider flex items-center justify-center space-x-2">
+                                        <span>📋 一鍵複製 WhatsApp 分析報告</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 儲蓄保險回報與 IRR 比較模組 -->
+                    <div id="irrCalculatorSection" class="card hidden-section">
+                        <div id="irrApp">
+                            <div class="flex flex-col sm:flex-row justify-between items-center mb-8 border-b pb-4 gap-4">
+                                <div>
+                                    <h2 class="text-xl font-bold text-slate-900">💡 儲蓄保險回報與 IRR 比較系統</h2>
+                                    <p class="text-xs text-slate-500">多計劃並排對比、總已付保費、淨收益與內部回報率分析</p>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="flex items-center bg-white border rounded-lg px-3 py-1.5 shadow-sm">
+                                        <span class="text-xs font-semibold text-slate-500 mr-2">貨幣：</span>
+                                        <select v-model="currency" class="text-sm font-bold text-blue-600 bg-transparent focus:outline-none cursor-pointer">
+                                            <option value="HKD">HKD (港幣)</option>
+                                            <option value="USD">USD (美金)</option>
+                                        </select>
+                                    </div>
+                                    <button @click="clearAllPlans" class="bg-white border text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm">清空所有計劃</button>
+                                </div>
+                            </div>
+
+                            <div class="space-y-6">
+                                <div class="bg-[#fcfaf7] p-6 rounded-xl shadow-sm border border-slate-100">
+                                    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                                         <div>
-                                            <div class="flex justify-between items-center mb-1">
-                                                <label class="text-[10px] text-stone-500">供款金額 (HKD)</label>
-                                                <select class="policy-freq text-[9px] bg-stone-100 border border-stone-200 rounded px-1 text-stone-600 focus:outline-none">
-                                                    <option value="year">每年</option>
-                                                    <option value="month">每月</option>
-                                                </select>
+                                            <h3 class="text-base font-bold text-slate-900">⚖️ 儲蓄計劃並排比較 ({{ currency }})</h3>
+                                            <p class="text-xs text-slate-500">輸入唔同保險公司或年期嘅儲蓄計劃，即時計算並突顯 IRR 最高之方案。</p>
+                                        </div>
+                                        <button @click="addPlan" class="bg-slate-800 text-white text-xs px-4 py-2 rounded-lg font-medium hover:bg-slate-900 transition shadow-sm">+ 新增比較計劃</button>
+                                    </div>
+                                </div>
+
+                                <div v-if="comparisonPlans.length === 0" class="bg-white p-12 rounded-xl shadow-sm border border-slate-100 text-center text-slate-400 text-sm">
+                                    暫未有比較計劃，請點擊上方「+ 新增比較計劃」開始試算。
+                                </div>
+                                
+                                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                                    <div v-for="(plan, index) in comparisonPlans" :key="plan.id" class="bg-white p-6 rounded-xl shadow-sm border relative transition" :class="plan.id === bestPlanId ? 'border-emerald-500 ring-2 ring-emerald-100' : 'border-slate-100'">
+                                        <div class="flex justify-between items-center mb-4 pb-2 border-b">
+                                            <input v-model="plan.name" type="text" placeholder="計劃名稱 (例如：AIA 盈御)" class="font-bold text-slate-800 text-sm bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none px-1 w-2/3">
+                                            <div class="flex items-center gap-2">
+                                                <span v-if="plan.id === bestPlanId && calculateIRR(plan) > 0" class="bg-emerald-100 text-emerald-700 text-[11px] px-2 py-0.5 rounded-full font-bold">⭐ IRR 最高</span>
+                                                <button @click="removePlan(plan.id)" class="text-slate-400 hover:text-rose-500 text-xs px-2 py-1 transition">刪除</button>
                                             </div>
-                                            <input type="number" placeholder="0" class="policy-premium w-full px-2.5 py-1.5 bg-white border border-stone-200 rounded-md text-xs focus:outline-none">
                                         </div>
-                                    </div>
 
-                                    <div class="grid grid-cols-4 gap-2 pt-2 border-t border-stone-200">
-                                        <div>
-                                            <label class="block text-[9px] text-stone-400">生效日期</label>
-                                            <input type="date" onchange="autoCalcInsuranceEndDate(this)" class="policy-startdate w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+                                        <div class="grid grid-cols-2 gap-3 mb-4">
+                                            <div>
+                                                <label class="block text-xs font-semibold text-slate-500 mb-1">每年保費 ({{ currency }})</label>
+                                                <input v-model.number="plan.annualPremium" type="number" placeholder="0" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-semibold text-slate-500 mb-1">供款年期 (年)</label>
+                                                <input v-model.number="plan.payYears" type="number" placeholder="5" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-semibold text-slate-500 mb-1">試算目標年份</label>
+                                                <input v-model.number="plan.targetYear" type="number" placeholder="10" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            </div>
+                                            <div>
+                                                <label class="block text-xs font-semibold text-slate-500 mb-1">預期總退保價值</label>
+                                                <input v-model.number="plan.surrenderValue" type="number" placeholder="0" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
+                                            </div>
                                         </div>
-                                        <div>
-                                            <label class="block text-[9px] text-stone-400">供款年期</label>
-                                            <input type="number" placeholder="0" onchange="autoCalcInsuranceEndDate(this)" class="policy-term w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
-                                        </div>
-                                        <div>
-                                            <label class="block text-[9px] text-stone-400">現金價值 / 結餘</label>
-                                            <input type="number" placeholder="0" class="policy-cashvalue w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
-                                        </div>
-                                        <div>
-                                            <label class="block text-[9px] text-stone-400">到期日 (自動)</label>
-                                            <input type="date" class="policy-enddate w-full px-1.5 py-1 bg-white border border-stone-200 rounded text-[10px]">
+
+                                        <div class="bg-slate-50 p-4 rounded-lg grid grid-cols-3 gap-2 text-center">
+                                            <div>
+                                                <p class="text-[10px] text-slate-400 uppercase font-semibold">總已付保費</p>
+                                                <p class="text-xs font-bold text-slate-800 mt-0.5">{{ currencySymbol }} {{ calculatePaid(plan).toLocaleString() }}</p>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] text-slate-400 uppercase font-semibold">淨收益</p>
+                                                <p class="text-xs font-bold text-emerald-600 mt-0.5" :class="calculateProfit(plan) < 0 ? 'text-rose-500' : ''">
+                                                    {{ calculateProfit(plan) >= 0 ? '+' : '' }}{{ currencySymbol }} {{ calculateProfit(plan).toLocaleString() }}
+                                                </p>
+                                            </div>
+                                            <div>
+                                                <p class="text-[10px] text-slate-400 uppercase font-semibold">預估 IRR</p>
+                                                <p class="text-xs font-bold text-blue-600 mt-0.5">{{ calculateIRR(plan) }} %</p>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        <div class="space-y-3 pt-2">
-                            <div class="flex items-center space-x-2 border-b border-stone-100 pb-2">
-                                <span class="w-2 h-2 rounded-full bg-stone-700"></span>
-                                <h2 class="text-sm font-medium tracking-wide text-stone-850 serif-title">二、 理想保障目標</h2>
-                            </div>
-                            <div class="grid grid-cols-2 gap-3">
-                                <div>
-                                    <label class="block text-[11px] font-medium text-stone-500 mb-1">目標人壽保額</label>
-                                    <input type="number" id="insTargetLife" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-medium text-stone-500 mb-1">目標危疾保額</label>
-                                    <input type="number" id="insTargetCI" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-medium text-stone-500 mb-1">目標意外保額</label>
-                                    <input type="number" id="insTargetAccident" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
-                                </div>
-                                <div>
-                                    <label class="block text-[11px] font-medium text-stone-500 mb-1">目標退休金儲蓄</label>
-                                    <input type="number" id="insTargetRetirement" placeholder="0" class="w-full px-3 py-2 bg-[#f9f8f6] border border-stone-200 rounded-lg text-xs focus:outline-none">
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="button" onclick="calculateInsuranceSummary()" class="w-full bg-stone-800 hover:bg-stone-900 text-stone-100 font-medium py-3 rounded-xl transition-colors text-xs tracking-widest uppercase">
-                            計算保障分析
-                        </button>
                     </div>
 
-                    <div class="lg:col-span-5 bg-[#fffefc] rounded-xl shadow-sm border border-stone-200 p-6 flex flex-col justify-between space-y-6">
-                        <div class="space-y-4">
-                            <div class="flex items-center space-x-2 border-b border-stone-100 pb-3">
-                                <span class="w-2 h-2 rounded-full bg-stone-700"></span>
-                                <h2 class="text-sm font-medium tracking-wide text-stone-850 serif-title">三、 缺口與資產總結</h2>
-                            </div>
-
-                            <div class="bg-[#f9f8f6] p-4 rounded-xl border border-stone-200/60 space-y-1.5 text-xs">
-                                <p class="font-medium text-stone-800" id="insSummaryHeader">客戶：<span class="font-semibold text-stone-900">未填寫</span> (性別：- | 年齡：-)</p>
-                                <p class="text-stone-500">有效保單/MPF數：<span id="insDispPolicyCount" class="font-medium text-stone-800">0</span> 份</p>
-                                <p class="text-stone-500">供款支出：<span id="insDispMonthlyPremium" class="font-medium text-stone-800">HK$0 /月</span> (年繳: <span id="insDispAnnualPremium" class="font-medium text-stone-800">HK$0</span>)</p>
-                                <p class="text-stone-500">保單現金價值總額：<span id="insDispCashValue" class="font-medium text-stone-800">HK$0</span></p>
-                                <p class="text-stone-500">MPF 強積金結餘總額：<span id="insDispMpfValue" class="font-medium text-stone-800">HK$0</span></p>
-                                <p class="text-stone-500 font-semibold text-stone-700 pt-1 border-t border-stone-200/60">總資產結餘 (現金價值 + MPF)：<span id="insDispTotalCashValue" class="font-bold text-stone-900">HK$0</span></p>
-                            </div>
-
+                    <!-- 免責聲明與私隱政策頁面（已放至最後一項） -->
+                    <div id="disclaimerSection" class="card hidden-section">
+                        <div class="section-title">
+                            <span>⚖️ 免責聲明與個人私隱政策</span>
+                            <span class="text-xs text-stone-500">使用者條款與資料保障聲明</span>
+                        </div>
+                        <div class="text-xs text-stone-600 space-y-4 mt-4 leading-relaxed">
                             <div>
-                                <h4 class="font-medium text-stone-700 mb-1.5 text-[11px] uppercase tracking-wider">現有保單與 MPF 明細清單</h4>
-                                <div id="insPolicyListSummary" class="space-y-1.5 max-h-28 overflow-y-auto pr-1 text-stone-500 text-[11px]">
-                                    尚未新增任何保單或 MPF
-                                </div>
+                                <h4 class="font-bold text-stone-850 mb-1">1. 免責聲明 (Disclaimer)</h4>
+                                <p>本系統所提供之所有試算結果、保費參考數據、醫院收費及理財分析僅供教育及參考用途，不構成任何保險產品之要約、游說、招攬、建議或專業財務策劃意見。實際保費及條款以各大保險公司最後批核及正式保單合約為準。</p>
                             </div>
-
-                            <div class="space-y-2">
-                                <div class="flex justify-between text-xs py-1 border-b border-stone-100">
-                                    <span class="text-stone-500">人壽保障缺口</span>
-                                    <span id="insLifeGapText" class="font-semibold text-stone-800">HK$ 0</span>
-                                </div>
-                                <div class="flex justify-between text-xs py-1 border-b border-stone-100">
-                                    <span class="text-stone-500">危疾保障缺口</span>
-                                    <span id="insCiGapText" class="font-semibold text-stone-800">HK$ 0</span>
-                                </div>
-                                <div class="flex justify-between text-xs py-1 border-b border-stone-100">
-                                    <span class="text-stone-500">意外保障缺口</span>
-                                    <span id="insAccidentGapText" class="font-semibold text-stone-800">HK$ 0</span>
-                                </div>
-                                <div class="flex justify-between text-xs py-1 border-b border-stone-100">
-                                    <span class="text-stone-500">退休金儲蓄缺口</span>
-                                    <span id="insRetirementGapText" class="font-semibold text-stone-800">HK$ 0</span>
-                                </div>
-                            </div>
-
-                            <div class="relative h-40 w-full flex items-center justify-center pt-2">
-                                <canvas id="insGapChart"></canvas>
-                            </div>
-                        </div>
-
-                        <div class="space-y-2 no-print">
-                            <button onclick="exportInsurancePDF()" class="w-full bg-stone-800 hover:bg-stone-900 text-stone-100 font-medium py-3 rounded-xl transition-colors text-xs tracking-wider flex items-center justify-center space-x-2">
-                                <span>📄 匯出 PDF 分析報告</span>
-                            </button>
-                            <button onclick="copyInsuranceWhatsAppReport()" class="w-full bg-stone-100 hover:bg-stone-200 text-stone-800 font-medium py-2.5 rounded-xl transition-colors text-xs tracking-wider flex items-center justify-center space-x-2">
-                                <span>📋 一鍵複製 WhatsApp 分析報告</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- 儲蓄保險回報與 IRR 比較模組 -->
-            <div id="irrCalculatorSection" class="card hidden-section">
-                <div id="irrApp">
-                    <div class="flex flex-col sm:flex-row justify-between items-center mb-8 border-b pb-4 gap-4">
-                        <div>
-                            <h2 class="text-xl font-bold text-slate-900">💡 儲蓄保險回報與 IRR 比較系統</h2>
-                            <p class="text-xs text-slate-500">多計劃並排對比、總已付保費、淨收益與內部回報率分析</p>
-                        </div>
-                        <div class="flex items-center gap-4">
-                            <div class="flex items-center bg-white border rounded-lg px-3 py-1.5 shadow-sm">
-                                <span class="text-xs font-semibold text-slate-500 mr-2">貨幣：</span>
-                                <select v-model="currency" class="text-sm font-bold text-blue-600 bg-transparent focus:outline-none cursor-pointer">
-                                    <option value="HKD">HKD (港幣)</option>
-                                    <option value="USD">USD (美金)</option>
-                                </select>
-                            </div>
-                            <button @click="clearAllPlans" class="bg-white border text-rose-600 hover:bg-rose-50 px-3 py-1.5 rounded-lg text-xs font-medium transition shadow-sm">清空所有計劃</button>
-                        </div>
-                    </div>
-
-                    <div class="space-y-6">
-                        <div class="bg-[#fcfaf7] p-6 rounded-xl shadow-sm border border-slate-100">
-                            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-                                <div>
-                                    <h3 class="text-base font-bold text-slate-900">⚖️ 儲蓄計劃並排比較 ({{ currency }})</h3>
-                                    <p class="text-xs text-slate-500">輸入唔同保險公司或年期嘅儲蓄計劃，即時計算並突顯 IRR 最高之方案。</p>
-                                </div>
-                                <button @click="addPlan" class="bg-slate-800 text-white text-xs px-4 py-2 rounded-lg font-medium hover:bg-slate-900 transition shadow-sm">+ 新增比較計劃</button>
-                            </div>
-                        </div>
-
-                        <div v-if="comparisonPlans.length === 0" class="bg-white p-12 rounded-xl shadow-sm border border-slate-100 text-center text-slate-400 text-sm">
-                            暫未有比較計劃，請點擊上方「+ 新增比較計劃」開始試算。
-                        </div>
-                        
-                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-                            <div v-for="(plan, index) in comparisonPlans" :key="plan.id" class="bg-white p-6 rounded-xl shadow-sm border relative transition" :class="plan.id === bestPlanId ? 'border-emerald-500 ring-2 ring-emerald-100' : 'border-slate-100'">
-                                <div class="flex justify-between items-center mb-4 pb-2 border-b">
-                                    <input v-model="plan.name" type="text" placeholder="計劃名稱 (例如：AIA 盈御)" class="font-bold text-slate-800 text-sm bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none px-1 w-2/3">
-                                    <div class="flex items-center gap-2">
-                                        <span v-if="plan.id === bestPlanId && calculateIRR(plan) > 0" class="bg-emerald-100 text-emerald-700 text-[11px] px-2 py-0.5 rounded-full font-bold">⭐ IRR 最高</span>
-                                        <button @click="removePlan(plan.id)" class="text-slate-400 hover:text-rose-500 text-xs px-2 py-1 transition">刪除</button>
-                                    </div>
-                                </div>
-
-                                <div class="grid grid-cols-2 gap-3 mb-4">
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">每年保費 ({{ currency }})</label>
-                                        <input v-model.number="plan.annualPremium" type="number" placeholder="0" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">供款年期 (年)</label>
-                                        <input v-model.number="plan.payYears" type="number" placeholder="5" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">試算目標年份</label>
-                                        <input v-model.number="plan.targetYear" type="number" placeholder="10" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    </div>
-                                    <div>
-                                        <label class="block text-xs font-semibold text-slate-500 mb-1">預期總退保價值</label>
-                                        <input v-model.number="plan.surrenderValue" type="number" placeholder="0" class="w-full border rounded-lg px-3 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-blue-500">
-                                    </div>
-                                </div>
-
-                                <div class="bg-slate-50 p-4 rounded-lg grid grid-cols-3 gap-2 text-center">
-                                    <div>
-                                        <p class="text-[10px] text-slate-400 uppercase font-semibold">總已付保費</p>
-                                        <p class="text-xs font-bold text-slate-800 mt-0.5">{{ currencySymbol }} {{ calculatePaid(plan).toLocaleString() }}</p>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] text-slate-400 uppercase font-semibold">淨收益</p>
-                                        <p class="text-xs font-bold text-emerald-600 mt-0.5" :class="calculateProfit(plan) < 0 ? 'text-rose-500' : ''">
-                                            {{ calculateProfit(plan) >= 0 ? '+' : '' }}{{ currencySymbol }} {{ calculateProfit(plan).toLocaleString() }}
-                                        </p>
-                                    </div>
-                                    <div>
-                                        <p class="text-[10px] text-slate-400 uppercase font-semibold">預估 IRR</p>
-                                        <p class="text-xs font-bold text-blue-600 mt-0.5">{{ calculateIRR(plan) }} %</p>
-                                    </div>
-                                </div>
+                            <div>
+                                <h4 class="font-bold text-stone-850 mb-1">2. 個人私隱政策 (Privacy Policy)</h4>
+                                <p>本系統非常重視您的個人私隱。您在試算器或表單中所輸入之薪金、保單或個人資料僅用於本地瀏覽器即時運算，絕不會在未經您授權的情況下擅自外泄或作商業轉售。</p>
                             </div>
                         </div>
                     </div>
@@ -1181,6 +1464,7 @@
             <!-- 底部聯絡我們 -->
             <div class="footer-contact-bar">
                 <button class="btn-contact" onclick="goToPage('contactPage')">聯絡我們</button>
+                <a href="https://wa.me/85260203169?text=你好！我想直接聯絡專員查詢" target="_blank" class="btn-contact" style="background-color: #25D366; text-decoration: none; display: inline-flex; align-items: center; justify-content: center;">📲 WhatsApp 專員</a>
             </div>
         </div>
     </div>
@@ -1225,7 +1509,7 @@
     </div>
 
 <script>
-    const WHATSAPP_PHONE = '85290000000'; // 👈 填入您的專屬 WhatsApp 號碼[cite: 1]
+    const WHATSAPP_PHONE = '85260203169'; // 👈 已設定為 +85260203169[cite: 1]
 
     function goToPage(pageId) {
         const pages = ['homePage', 'dataPage', 'contactPage'];
@@ -1285,6 +1569,73 @@
             submitBtn.innerText = "提交查詢";
             submitBtn.disabled = false;
         }
+    }
+
+    // ==========================================
+    // 側邊欄高亮狀態更新函數
+    // ==========================================
+    function updateSidebarActiveStates() {
+        const mainMode = document.querySelector('input[name="mainMode"]:checked').value;
+        const subMode = document.querySelector('input[name="subMode"]:checked').value;
+
+        // 清除所有高亮
+        document.querySelectorAll('.radio-group-vertical > label, .sub-menu-vertical > label').forEach(lbl => {
+            lbl.classList.remove('active-menu', 'active-submenu');
+        });
+
+        // 高亮主選單
+        const activeMainLbl = document.getElementById('lbl-' + mainMode);
+        if (activeMainLbl) activeMainLbl.classList.add('active-menu');
+
+        // 如果在保險群組，高亮對應的子選單
+        if (mainMode === 'insuranceGroup') {
+            const activeSubLbl = document.getElementById('lbl-sub-' + subMode);
+            if (activeSubLbl) activeSubLbl.classList.add('active-submenu');
+        }
+    }
+
+    // ==========================================
+    // 財務健康小測驗與預約邏輯
+    // ==========================================
+    function calculateQuizScore() {
+        const q1 = document.querySelector('input[name="q1"]:checked');
+        const q2 = document.querySelector('input[name="q2"]:checked');
+        const q3 = document.querySelector('input[name="q3"]:checked');
+
+        if (!q1 || !q2 || !q3) {
+            alert('請回答所有問題後再查看評分！');
+            return;
+        }
+
+        const score = parseInt(q1.value) + parseInt(q2.value) + parseInt(q3.value);
+        const titleEl = document.getElementById('quizScoreTitle');
+        const descEl = document.getElementById('quizScoreDesc');
+
+        if (score >= 7) {
+            titleEl.innerText = "🏆 您的財務健康指數：極佳 (8-9分)";
+            descEl.innerText = "您的預備金與醫療保障非常完善，並懂得善用工具規劃未來。建議定期檢視資產組合以維持回報。";
+        } else if (score >= 4) {
+            titleEl.innerText = "⚠️ 您的財務健康指數：良好但有進步空間 (4-7分)";
+            descEl.innerText = "您已有一定的理財意識，但在醫療保障或應急資金上仍存在部分缺口，建議盡快加強配置。";
+        } else {
+            titleEl.innerText = "🚨 您的財務健康指數：需要注意 (0-3分)";
+            descEl.innerText = "您目前的財務防線較為薄弱，面對突發醫療或經濟波動時風險較高。強烈建議預約專家協助做全方位保障規劃！";
+        }
+
+        document.getElementById('quizContainer').classList.add('hidden');
+        document.getElementById('quizResult').classList.remove('hidden');
+    }
+
+    function submitBooking(e) {
+        e.preventDefault();
+        const name = document.getElementById('bookName').value;
+        const phone = document.getElementById('bookPhone').value;
+        const topic = document.getElementById('bookTopic').value;
+        const dt = document.getElementById('bookDatetime').value;
+
+        const waMsg = encodeURIComponent(`你好！我想預約專屬諮詢：\n👤 姓名：${name}\n📞 電話：${phone}\n📌 主題：${topic}\n📅 時間：${dt}`);
+        window.open(`https://wa.me/85260203169?text=${waMsg}`, '_blank');
+        alert(`感謝 ${name}！已為您導向 WhatsApp 發送預約申請。`);
     }
 
     // ==========================================
@@ -1711,7 +2062,7 @@
                     <div style="font-weight: 600; font-size: 15px; margin-bottom: 4px;">${p.name}</div>
                     <div style="font-size: 12px; color: var(--sub-text); margin-bottom: 8px;">${p.desc}</div>
                     <ul class="plan-items">${p.items.map(i => `<li>${i}</li>`).join('')}</ul>
-                    <a href="https://wa.me/${WHATSAPP_PHONE}?text=${waMsg}" target="_blank" class="plan-action-btn">📲 索取市場產品對比表及方案</a>
+                    <a href="https://wa.me/85260203169?text=${waMsg}" target="_blank" class="plan-action-btn">📲 索取市場產品對比表及方案</a>
                 `;
                 container.appendChild(card);
             });
@@ -1736,21 +2087,37 @@
         document.getElementById('vhisSection').classList.add('hidden-section');
         document.getElementById('taxCalculatorSection').classList.add('hidden-section');
         document.getElementById('eventsSection').classList.add('hidden-section');
+        document.getElementById('wikiSection').classList.add('hidden-section');
+        document.getElementById('hospitalFeesSection').classList.add('hidden-section');
+        document.getElementById('quizSection').classList.add('hidden-section');
+        document.getElementById('bookingSection').classList.add('hidden-section');
+        document.getElementById('disclaimerSection').classList.add('hidden-section');
         document.getElementById('insuranceAnalysisSection').classList.add('hidden-section');
         document.getElementById('irrCalculatorSection').classList.add('hidden-section');
 
         if (mainMode === 'insuranceGroup') {
             subMenu.style.display = 'flex';
-            // 觸發當前子選項的切換
             switchMode();
         } else {
             subMenu.style.display = 'none';
             if (mainMode === 'events') {
                 document.getElementById('eventsSection').classList.remove('hidden-section');
+            } else if (mainMode === 'wiki') {
+                document.getElementById('wikiSection').classList.remove('hidden-section');
+            } else if (mainMode === 'hospitalFees') {
+                document.getElementById('hospitalFeesSection').classList.remove('hidden-section');
+            } else if (mainMode === 'quiz') {
+                document.getElementById('quizSection').classList.remove('hidden-section');
+            } else if (mainMode === 'booking') {
+                document.getElementById('bookingSection').classList.remove('hidden-section');
             } else if (mainMode === 'er') {
                 document.getElementById('erSection').classList.remove('hidden-section');
+            } else if (mainMode === 'disclaimer') {
+                document.getElementById('disclaimerSection').classList.remove('hidden-section');
             }
         }
+
+        updateSidebarActiveStates();
     }
 
     function switchMode() {
@@ -1774,6 +2141,8 @@
             document.getElementById('insuranceAnalysisSection').classList.remove('hidden-section');
             calculateInsuranceSummary();
         }
+
+        updateSidebarActiveStates();
     }
 
     // ==========================================
@@ -2266,6 +2635,9 @@
         loadCompanyCheckboxes();
         document.getElementById('dataPage').style.display = 'none';
         document.getElementById('contactPage').style.display = 'none';
+
+        // 初始高亮狀態更新
+        updateSidebarActiveStates();
 
         // 扣稅計算機事件綁定
         const btnCalcTax = document.getElementById('btn-submit-tax');
